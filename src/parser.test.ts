@@ -1,6 +1,7 @@
 import {describe, it, expect} from "@jest/globals";
 import {OutputFake} from "./output.fake.ts";
 import {Output} from "./output.type.ts";
+import dedent from "dedent";
 
 class ParserFormatter {
     constructor(private output: Output) {}
@@ -57,8 +58,9 @@ describe("an output stream parser/formatter", () => {
             }),
         );
 
-        expect(outputFake.value()).toBe(
-            "Run all tests:\nBash: pnpm test 2>&1 | tail -100\n",
-        );
+        expect(outputFake.value()).toBe(dedent`
+            Run all tests:
+            Bash: pnpm test 2>&1 | tail -100\n
+        `);
     });
 });
