@@ -6,7 +6,7 @@ import {
     TextMessageContent,
     ThinkingMessageContent,
     ToolUseMessageContent,
-} from "./formats/assistant-message-content.ts";
+} from "./formats/assistant-message.ts";
 import {
     BashToolCall,
     EditToolCall,

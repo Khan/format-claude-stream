@@ -1,13 +1,10 @@
 import * as z from "zod";
-import {AssistantMessageContent} from "./assistant-message-content.ts";
+import {AssistantMessage} from "./assistant-message.ts";
 import {UserMessage} from "./user-message.ts";
 
 export const AssistantLine = z.looseObject({
     type: z.literal("assistant"),
-    message: z.looseObject({
-        type: z.literal("message"),
-        content: z.array(AssistantMessageContent),
-    }),
+    message: AssistantMessage,
 });
 
 export const ResultLine = z.looseObject({

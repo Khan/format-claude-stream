@@ -21,3 +21,8 @@ export const AssistantMessageContent = z.discriminatedUnion("type", [
     TextMessageContent,
     ToolUseMessageContent,
 ]);
+
+export const AssistantMessage = z.looseObject({
+    type: z.literal("message"),
+    content: z.array(AssistantMessageContent),
+});
