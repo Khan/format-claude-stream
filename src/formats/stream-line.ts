@@ -70,7 +70,7 @@ const StreamEventLine = z.object({
     type: z.literal("stream_event"),
 });
 
-const User = z.object({
+const UserLine = z.object({
     type: z.literal("user"),
 });
 
@@ -78,5 +78,5 @@ export const StreamLine = z.discriminatedUnion("type", [
     AssistantLine,
     ResultLine,
     StreamEventLine,
-    User,
+    UserLine,
 ]);
