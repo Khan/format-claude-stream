@@ -65,26 +65,30 @@ export class ParserFormatter {
     private async writeThinkingMessageContent(
         data: z.infer<typeof ThinkingMessageContent>,
     ) {
-        await this.output.write(`Thinking: ${data.thinking}\n`);
+        await this.writeLine(`Thinking: ${data.thinking}`);
     }
 
     private async writeBashToolCall(toolCall: z.infer<typeof BashToolCall>) {
-        await this.output.write(
-            `${toolCall.input.description}:\n${toolCall.name}: ${toolCall.input.command}\n`,
+        await this.writeLine(
+            `${toolCall.input.description}:\n${toolCall.name}: ${toolCall.input.command}`,
         );
     }
 
     private async writeReadToolCall(toolCall: z.infer<typeof ReadToolCall>) {
-        await this.output.write(`Read: ${toolCall.input.file_path}\n`);
+        await this.writeLine(`Read: ${toolCall.input.file_path}`);
     }
 
     private async writeEditToolCall(toolCall: z.infer<typeof EditToolCall>) {
-        await this.output.write(`Edit: ${toolCall.input.file_path}\n`);
+        await this.writeLine(`Edit: ${toolCall.input.file_path}`);
     }
 
     private async writeGrepToolCall(toolCall: z.infer<typeof GrepToolCall>) {
-        await this.output.write(
-            `Grep: /${toolCall.input.pattern}/ in ${toolCall.input.path}\n`,
+        await this.writeLine(
+            `Grep: /${toolCall.input.pattern}/ in ${toolCall.input.path}`,
         );
+    }
+
+    private async writeLine(text: string) {
+        await this.output.write(text + "\n");
     }
 }
