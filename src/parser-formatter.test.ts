@@ -57,4 +57,58 @@ describe("an output stream parser/formatter", () => {
             Bash: pnpm test 2>&1 | tail -100\n
         `);
     });
+
+    it("formats a Read tool call", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ParserFormatter(outputFake);
+
+        await pf.write(
+            JSON.stringify({
+                type: "assistant",
+                message: {
+                    type: "message",
+                    content: [
+                        {
+                            type: "tool_use",
+                            name: "Read",
+                            input: {
+                                file_path: "/foo/bar",
+                            },
+                        },
+                    ],
+                },
+            }),
+        );
+
+        expect(outputFake.value()).toBe(dedent`
+            Read: /foo/bar\n
+        `);
+    });
+
+    it("formats an Edit tool call", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ParserFormatter(outputFake);
+
+        await pf.write(
+            JSON.stringify({
+                type: "assistant",
+                message: {
+                    type: "message",
+                    content: [
+                        {
+                            type: "tool_use",
+                            name: "Edit",
+                            input: {
+                                file_path: "/foo/bar",
+                            },
+                        },
+                    ],
+                },
+            }),
+        );
+
+        expect(outputFake.value()).toBe(dedent`
+            Edit: /foo/bar\n
+        `);
+    });
 });

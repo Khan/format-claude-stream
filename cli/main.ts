@@ -1,15 +1,30 @@
 #!/usr/bin/env -S node --import @swc-node/register/esm-register
 
 import readline from "readline";
+import {ParserFormatter} from "../src/parser-formatter.ts";
+import {StandardOutput} from "../src/standard-output.ts";
+
+const pf = new ParserFormatter(new StandardOutput());
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  terminal: false
+  terminal: false,
 });
 
+let promiseChain = Promise.resolve()
+
 rl.on('line', (line) => {
-    console.log(line);
+    promiseChain = promiseChain.then(async () => {
+        try {
+            await pf.write(line);
+        } catch (e) {
+            console.error(e)
+            console.error("The bad line of input was:")
+            console.error(line)
+            process.exit(1)
+        }
+    })
 });
 
 rl.once('close', () => {
