@@ -83,8 +83,9 @@ export class ParserFormatter {
     }
 
     private async writeGrepToolCall(toolCall: z.infer<typeof GrepToolCall>) {
+        const escapedPattern = toolCall.input.pattern.replace(/[/]/g, "\\/");
         await this.writeLine(
-            `Grep: /${toolCall.input.pattern}/ in ${toolCall.input.path}`,
+            `Grep: /${escapedPattern}/ in ${toolCall.input.path}`,
         );
     }
 

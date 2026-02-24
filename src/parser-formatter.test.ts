@@ -160,4 +160,31 @@ describe("an output stream parser/formatter", () => {
 
         expect(outputFake.value()).toBe("Grep: /a regex/ in /my/project\n");
     });
+
+    it("escapes slashes in a grep pattern", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ParserFormatter(outputFake);
+
+        await pf.write(
+            JSON.stringify({
+                type: "assistant",
+                message: {
+                    type: "message",
+                    content: [
+                        {
+                            type: "tool_use",
+                            name: "Grep",
+                            input: {
+                                pattern: "/",
+                                path: "/my/project",
+                                output_mode: "content",
+                            },
+                        },
+                    ],
+                },
+            }),
+        );
+
+        expect(outputFake.value()).toBe("Grep: /\\// in /my/project\n");
+    });
 });

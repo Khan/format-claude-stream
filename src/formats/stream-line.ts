@@ -26,7 +26,7 @@ export const BashToolCall = z.object({
 export const GrepToolCall = z.object({
     name: z.literal("Grep"),
     input: z.object({
-        path: z.string(),
+        path: z.optional(z.string()),
         pattern: z.string(),
     }),
 });

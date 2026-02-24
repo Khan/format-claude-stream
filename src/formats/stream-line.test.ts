@@ -1,5 +1,5 @@
 import {describe, it, expect} from "@jest/globals";
-import {StreamLine} from "./stream-line.ts";
+import {GrepToolCall, StreamLine} from "./stream-line.ts";
 
 describe("the StreamLine schema", () => {
     it("rejects an object with an unknown `type`", () => {
@@ -17,6 +17,21 @@ describe("the StreamLine schema", () => {
             },
         };
         expect(StreamLine.safeParse(thinking)).toEqual(
+            expect.objectContaining({success: true}),
+        );
+    });
+
+    it("accepts a grep tool call with no path", () => {
+        const grep = {
+            type: "tool_use",
+            name: "Grep",
+            input: {
+                pattern: "a regex",
+                output_mode: "content",
+            },
+        };
+
+        expect(GrepToolCall.safeParse(grep)).toEqual(
             expect.objectContaining({success: true}),
         );
     });
