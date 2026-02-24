@@ -1,15 +1,18 @@
 import * as z from "zod";
-import {StreamLine, ToolCall} from "./formats/stream-line.ts";
+import {StreamLine} from "./formats/stream-line.ts";
 import {Output} from "./output.type.ts";
-import type {
-    AssistantLine,
+import type {AssistantLine} from "./formats/stream-line.ts";
+import {
+    ThinkingMessageContent,
+    ToolUseMessageContent,
+} from "./formats/assistant-message-content.ts";
+import {
     BashToolCall,
     EditToolCall,
     GrepToolCall,
     ReadToolCall,
-    ThinkingMessageContent,
-    ToolUseMessageContent,
-} from "./formats/stream-line.ts";
+    ToolCall,
+} from "./formats/tool-calls.ts";
 
 export class ParserFormatter {
     constructor(private output: Output) {}
