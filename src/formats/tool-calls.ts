@@ -31,6 +31,11 @@ export const GrepToolCall = z.object({
     }),
 });
 
+export const UnrecognizedToolCall = z.object({
+    name: z.string(),
+    input: z.any(),
+})
+
 export const ToolCall = z.discriminatedUnion("name", [
     BashToolCall,
     EditToolCall,

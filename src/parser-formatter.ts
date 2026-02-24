@@ -12,6 +12,7 @@ import {
     GrepToolCall,
     ReadToolCall,
     ToolCall,
+    UnrecognizedToolCall,
 } from "./formats/tool-calls.ts";
 
 export class ParserFormatter {
@@ -21,7 +22,7 @@ export class ParserFormatter {
         const parsed = StreamLine.safeParse(JSON.parse(data));
 
         if (!parsed.success) {
-            // TODO: write the raw JSON
+            await this.writeLine(`Unrecognized JSON: ${data.trimEnd()}`);
             return;
         }
 
@@ -47,7 +48,14 @@ export class ParserFormatter {
     private async writeToolUseMessageContent(
         data: z.infer<typeof ToolUseMessageContent>,
     ) {
-        const toolCall = ToolCall.parse(data);
+        const parsedToolCall = ToolCall.safeParse(data);
+
+        if (!parsedToolCall.success) {
+            await this.writeUnrecognizedToolCall(data);
+            return;
+        }
+
+        const toolCall = parsedToolCall.data
 
         switch (toolCall.name) {
             case "Bash":
@@ -62,6 +70,8 @@ export class ParserFormatter {
             case "Grep":
                 await this.writeGrepToolCall(toolCall);
                 return;
+            default:
+                await this.writeUnrecognizedToolCall(toolCall);
         }
     }
 
@@ -89,6 +99,14 @@ export class ParserFormatter {
         const escapedPattern = toolCall.input.pattern.replace(/[/]/g, "\\/");
         await this.writeLine(
             `Grep: /${escapedPattern}/ in ${toolCall.input.path}`,
+        );
+    }
+
+    private async writeUnrecognizedToolCall(raw: unknown) {
+        const toolCall = UnrecognizedToolCall.parse(raw)
+
+        await this.writeLine(
+            `Unrecognized tool call: ${toolCall.name} ${JSON.stringify(toolCall.input)}`,
         );
     }
 

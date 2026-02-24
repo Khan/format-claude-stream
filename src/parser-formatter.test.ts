@@ -16,7 +16,7 @@ describe("an output stream parser/formatter", () => {
 
         await pf.write(`{}\n`);
 
-        expect(outputFake.value()).toBe("");
+        expect(outputFake.value()).toBe("Unrecognized JSON: {}\n");
     });
 
     it("ignores JSON payloads with unrecognized `type`", async () => {
@@ -25,7 +25,7 @@ describe("an output stream parser/formatter", () => {
 
         await pf.write(`{"type":"bork-bork-bork"}\n`);
 
-        expect(outputFake.value()).toBe("");
+        expect(outputFake.value()).toBe(`Unrecognized JSON: {"type":"bork-bork-bork"}\n`);
     });
 
     it("formats a Bash tool call", async () => {
@@ -187,4 +187,29 @@ describe("an output stream parser/formatter", () => {
 
         expect(outputFake.value()).toBe("Grep: /\\// in /my/project\n");
     });
+
+    it("writes an unrecognized tool call", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ParserFormatter(outputFake);
+
+        await pf.write(
+            JSON.stringify({
+                type: "assistant",
+                message: {
+                    type: "message",
+                    content: [
+                        {
+                            type: "tool_use",
+                            name: "UncannyValley",
+                            input: {
+                                foo: "bar",
+                            },
+                        },
+                    ],
+                },
+            }),
+        );
+
+        expect(outputFake.value()).toBe(`Unrecognized tool call: UncannyValley {"foo":"bar"}\n`)
+    })
 });
