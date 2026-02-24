@@ -30,13 +30,13 @@ export class ClaudeStreamFormatter {
         switch (parsed.data.type) {
             case "assistant":
                 await this.writeAssistantLine(parsed.data);
-                return;
+                break;
             case "result":
                 await this.writeResultLine(parsed.data);
-                return;
+                break;
             default:
                 await this.writeLine(JSON.stringify(parsed.data));
-                return;
+                break;
         }
     }
 
@@ -45,13 +45,13 @@ export class ClaudeStreamFormatter {
             switch (content.type) {
                 case "tool_use":
                     await this.writeToolUseMessageContent(content);
-                    return;
+                    break;
                 case "thinking":
                     await this.writeThinkingMessageContent(content);
-                    return;
+                    break;
                 case "text":
                     await this.writeTextMessageContent(content);
-                    return;
+                    break;
             }
         }
     }
@@ -75,16 +75,16 @@ export class ClaudeStreamFormatter {
         switch (toolCall.name) {
             case "Bash":
                 await this.writeBashToolCall(toolCall);
-                return;
+                break;
             case "Read":
                 await this.writeReadToolCall(toolCall);
-                return;
+                break;
             case "Edit":
                 await this.writeEditToolCall(toolCall);
-                return;
+                break;
             case "Grep":
                 await this.writeGrepToolCall(toolCall);
-                return;
+                break;
             default:
                 await this.writeUnrecognizedToolCall(toolCall);
         }
