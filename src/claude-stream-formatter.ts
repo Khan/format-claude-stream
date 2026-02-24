@@ -20,6 +20,8 @@ import {
 } from "./claude-stream-json-schema/tool-calls.ts";
 import {UserMessageContent} from "./claude-stream-json-schema/user-message.ts";
 import {Colorizer} from "./colorizer.type.ts";
+import { Interpreter } from "./interpreter.ts";
+import { GenericToolCall } from "./claude-io-events/generic-tool-call.ts";
 
 export class ClaudeStreamFormatter {
     private dimYellow: (text: string) => string;
@@ -28,7 +30,7 @@ export class ClaudeStreamFormatter {
 
     constructor(
         private output: Output,
-        colorizer: Colorizer,
+        private colorizer: Colorizer,
     ) {
         this.dimYellow = colorizer.hex("#bbaa66");
         this.brightYellow = colorizer.hex("#ffcc00");
@@ -160,11 +162,12 @@ export class ClaudeStreamFormatter {
     }
 
     private async writeUnrecognizedToolCall(raw: unknown) {
+        // TODO: Interpreter is a strangler fig that will eventually replace
+        // the ClaudeStreamFormatter.
         const toolCall = UnrecognizedToolCall.parse(raw);
-
-        await this.writeLine(
-            `Unrecognized tool call: ${toolCall.name} ${JSON.stringify(toolCall.input)}`,
-        );
+        const interpreter = new Interpreter(this.output, this.colorizer)
+        const event = new GenericToolCall(toolCall.name, toolCall.input)
+        interpreter.process(event);
     }
 
     private async writeLine(text: string) {

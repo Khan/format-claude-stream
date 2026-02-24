@@ -199,7 +199,7 @@ describe("ClaudeStreamFormatter", () => {
         });
 
         expect(outputFake.value()).toBe(
-            `Unrecognized tool call: UncannyValley {"foo":"bar"}\n`,
+            `UncannyValley: {"foo":"bar"}\n`,
         );
     });
 
