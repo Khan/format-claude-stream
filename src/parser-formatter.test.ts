@@ -1,22 +1,7 @@
 import {describe, it, expect} from "@jest/globals";
 import {OutputFake} from "./output.fake.ts";
-import {Output} from "./output.type.ts";
 import dedent from "dedent";
-
-class ParserFormatter {
-    constructor(private output: Output) {}
-
-    async write(data: string): Promise<void> {
-        const parsed = JSON.parse(data);
-        if (parsed.type !== "assistant") {
-            return;
-        }
-
-        this.output.write(
-            `${parsed.message.content[0].input.description}:\n${parsed.message.content[0].name}: ${parsed.message.content[0].input.command}\n`,
-        );
-    }
-}
+import {ParserFormatter} from "./parser-formatter.ts";
 
 describe("an output stream parser/formatter", () => {
     it("does not write to output when merely created", () => {
@@ -25,11 +10,20 @@ describe("an output stream parser/formatter", () => {
         expect(outputFake.value()).toBe("");
     });
 
-    it("ignores unrecognized JSON payloads", async () => {
+    it("ignores empty JSON payloads", async () => {
         const outputFake = new OutputFake();
         const pf = new ParserFormatter(outputFake);
 
-        await pf.write("{}\n");
+        await pf.write(`{}\n`);
+
+        expect(outputFake.value()).toBe("");
+    });
+
+    it("ignores JSON payloads with unrecognized `type`", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ParserFormatter(outputFake);
+
+        await pf.write(`{"type":"bork-bork-bork"}\n`);
 
         expect(outputFake.value()).toBe("");
     });
