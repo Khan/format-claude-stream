@@ -111,4 +111,26 @@ describe("an output stream parser/formatter", () => {
             Edit: /foo/bar\n
         `);
     });
+
+    it("formats thinking", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ParserFormatter(outputFake);
+
+        await pf.write(
+            JSON.stringify({
+                type: "assistant",
+                message: {
+                    type: "message",
+                    content: [
+                        {
+                            type: "thinking",
+                            thinking: "Mmm... donuts",
+                        },
+                    ],
+                },
+            }),
+        );
+
+        expect(outputFake.value()).toBe("Thinking: Mmm... donuts\n");
+    });
 });

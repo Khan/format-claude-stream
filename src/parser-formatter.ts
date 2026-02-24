@@ -6,6 +6,8 @@ import type {
     BashToolCall,
     EditToolCall,
     ReadToolCall,
+    ThinkingMessageContent,
+    ToolUseMessageContent,
 } from "./formats/stream-line.ts";
 
 export class ParserFormatter {
@@ -27,20 +29,39 @@ export class ParserFormatter {
 
     private async writeAssistantLine(data: z.infer<typeof AssistantLine>) {
         for (const content of data.message.content) {
-            const toolCall = ToolCall.parse(content);
-
-            switch (toolCall.name) {
-                case "Bash":
-                    await this.writeBashToolCall(toolCall);
+            switch (content.type) {
+                case "tool_use":
+                    await this.writeToolUseMessageContent(content);
                     return;
-                case "Read":
-                    await this.writeReadToolCall(toolCall);
-                    return;
-                case "Edit":
-                    await this.writeEditToolCall(toolCall);
+                case "thinking":
+                    await this.writeThinkingMessageContent(content);
                     return;
             }
         }
+    }
+
+    private async writeToolUseMessageContent(
+        data: z.infer<typeof ToolUseMessageContent>,
+    ) {
+        const toolCall = ToolCall.parse(data);
+
+        switch (toolCall.name) {
+            case "Bash":
+                await this.writeBashToolCall(toolCall);
+                return;
+            case "Read":
+                await this.writeReadToolCall(toolCall);
+                return;
+            case "Edit":
+                await this.writeEditToolCall(toolCall);
+                return;
+        }
+    }
+
+    private async writeThinkingMessageContent(
+        data: z.infer<typeof ThinkingMessageContent>,
+    ) {
+        await this.output.write(`Thinking: ${data.thinking}\n`);
     }
 
     private async writeBashToolCall(toolCall: z.infer<typeof BashToolCall>) {

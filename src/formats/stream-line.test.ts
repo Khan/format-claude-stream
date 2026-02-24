@@ -7,4 +7,17 @@ describe("the StreamLine schema", () => {
             expect.objectContaining({success: false}),
         );
     });
+
+    it("accepts a thinking message", () => {
+        const thinking = {
+            type: "assistant",
+            message: {
+                type: "message",
+                content: [{type: "thinking", thinking: "Mmm... donuts"}],
+            },
+        };
+        expect(StreamLine.safeParse(thinking)).toEqual(
+            expect.objectContaining({success: true}),
+        );
+    });
 });

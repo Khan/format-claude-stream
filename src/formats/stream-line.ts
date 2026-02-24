@@ -29,13 +29,21 @@ export const ToolCall = z.discriminatedUnion("name", [
     ReadToolCall,
 ]);
 
-const ToolUseMessageContent = z.object({
+export const ToolUseMessageContent = z.object({
     type: z.literal("tool_use"),
     name: z.string(),
     input: z.any(),
 });
 
-const MessageContent = z.discriminatedUnion("type", [ToolUseMessageContent]);
+export const ThinkingMessageContent = z.object({
+    type: z.literal("thinking"),
+    thinking: z.string(),
+});
+
+const MessageContent = z.discriminatedUnion("type", [
+    ThinkingMessageContent,
+    ToolUseMessageContent,
+]);
 
 export const AssistantLine = z.object({
     type: z.literal("assistant"),
