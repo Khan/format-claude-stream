@@ -23,9 +23,18 @@ export const BashToolCall = z.object({
     }),
 });
 
+export const GrepToolCall = z.object({
+    name: z.literal("Grep"),
+    input: z.object({
+        path: z.string(),
+        pattern: z.string(),
+    }),
+});
+
 export const ToolCall = z.discriminatedUnion("name", [
     BashToolCall,
     EditToolCall,
+    GrepToolCall,
     ReadToolCall,
 ]);
 

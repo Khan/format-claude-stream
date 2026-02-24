@@ -5,6 +5,7 @@ import type {
     AssistantLine,
     BashToolCall,
     EditToolCall,
+    GrepToolCall,
     ReadToolCall,
     ThinkingMessageContent,
     ToolUseMessageContent,
@@ -55,6 +56,9 @@ export class ParserFormatter {
             case "Edit":
                 await this.writeEditToolCall(toolCall);
                 return;
+            case "Grep":
+                await this.writeGrepToolCall(toolCall);
+                return;
         }
     }
 
@@ -76,5 +80,11 @@ export class ParserFormatter {
 
     private async writeEditToolCall(toolCall: z.infer<typeof EditToolCall>) {
         await this.output.write(`Edit: ${toolCall.input.file_path}\n`);
+    }
+
+    private async writeGrepToolCall(toolCall: z.infer<typeof GrepToolCall>) {
+        await this.output.write(
+            `Grep: /${toolCall.input.pattern}/ in ${toolCall.input.path}\n`,
+        );
     }
 }

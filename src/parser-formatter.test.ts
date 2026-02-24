@@ -133,4 +133,31 @@ describe("an output stream parser/formatter", () => {
 
         expect(outputFake.value()).toBe("Thinking: Mmm... donuts\n");
     });
+
+    it("formats a grep tool call", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ParserFormatter(outputFake);
+
+        await pf.write(
+            JSON.stringify({
+                type: "assistant",
+                message: {
+                    type: "message",
+                    content: [
+                        {
+                            type: "tool_use",
+                            name: "Grep",
+                            input: {
+                                pattern: "a regex",
+                                path: "/my/project",
+                                output_mode: "content",
+                            },
+                        },
+                    ],
+                },
+            }),
+        );
+
+        expect(outputFake.value()).toBe("Grep: /a regex/ in /my/project\n");
+    });
 });
