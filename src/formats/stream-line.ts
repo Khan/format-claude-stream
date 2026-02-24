@@ -3,16 +3,16 @@ import * as z from "zod";
 export const EditToolCall = z.object({
     name: z.literal("Edit"),
     input: z.object({
-        "file_path": z.string(),
-    })
-})
+        file_path: z.string(),
+    }),
+});
 
 export const ReadToolCall = z.object({
     name: z.literal("Read"),
     input: z.object({
-        "file_path": z.string(),
-    })
-})
+        file_path: z.string(),
+    }),
+});
 
 export const BashToolCall = z.object({
     name: z.literal("Bash"),
