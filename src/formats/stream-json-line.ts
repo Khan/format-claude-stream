@@ -11,6 +11,14 @@ export const AssistantLine = z.looseObject({
     message: AssistantMessage,
 });
 
+/**
+ * Represents input to Claude, including tool call results and file contents.
+ */
+export const UserLine = z.looseObject({
+    type: z.literal("user"),
+    message: UserMessage,
+});
+
 export const ResultLine = z.looseObject({
     type: z.literal("result"),
     result: z.string(),
@@ -20,17 +28,9 @@ const StreamEventLine = z.looseObject({
     type: z.literal("stream_event"),
 });
 
-/**
- * Represents input to Claude, including tool call results and file contents.
- */
-export const UserLine = z.looseObject({
-    type: z.literal("user"),
-    message: UserMessage,
-});
-
-export const StreamLine = z.discriminatedUnion("type", [
+export const StreamJsonLine = z.discriminatedUnion("type", [
     AssistantLine,
+    UserLine,
     ResultLine,
     StreamEventLine,
-    UserLine,
 ]);

@@ -1,9 +1,9 @@
 import {describe, it, expect} from "@jest/globals";
-import {StreamLine} from "./stream-line.ts";
+import {StreamJsonLine} from "./stream-json-line.ts";
 
-describe("the StreamLine schema", () => {
+describe("the StreamJsonLine schema", () => {
     it("rejects an object with an unknown `type`", () => {
-        expect(StreamLine.safeParse({type: "weird"})).toEqual(
+        expect(StreamJsonLine.safeParse({type: "weird"})).toEqual(
             expect.objectContaining({success: false}),
         );
     });
@@ -16,7 +16,7 @@ describe("the StreamLine schema", () => {
                 content: [{type: "thinking", thinking: "Mmm... donuts"}],
             },
         };
-        expect(StreamLine.safeParse(thinking)).toEqual(
+        expect(StreamJsonLine.safeParse(thinking)).toEqual(
             expect.objectContaining({success: true}),
         );
     });
@@ -43,7 +43,7 @@ describe("the StreamLine schema", () => {
             },
         };
 
-        expect(StreamLine.safeParse(toolResult)).toEqual(
+        expect(StreamJsonLine.safeParse(toolResult)).toEqual(
             expect.objectContaining({success: true}),
         );
     });

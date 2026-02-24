@@ -1,7 +1,7 @@
 import * as z from "zod";
-import {StreamLine} from "./formats/stream-line.ts";
+import {StreamJsonLine} from "./formats/stream-json-line.ts";
 import {Output} from "./output.type.ts";
-import type {AssistantLine, UserLine} from "./formats/stream-line.ts";
+import type {AssistantLine, UserLine} from "./formats/stream-json-line.ts";
 import {
     TextMessageContent,
     ThinkingMessageContent,
@@ -33,7 +33,7 @@ export class ClaudeStreamFormatter {
     }
 
     async write(data: unknown): Promise<void> {
-        const parsed = StreamLine.safeParse(data);
+        const parsed = StreamJsonLine.safeParse(data);
 
         if (!parsed.success) {
             await this.writeLine(`Unrecognized JSON: ${JSON.stringify(data)}`);
