@@ -3,8 +3,13 @@ import {Output} from "./output.type.ts";
 export class OutputFake implements Output {
     private written = "";
 
-    async write(data: string): Promise<void> {
-        this.written += data;
+    write(data: string): Promise<void> {
+        return new Promise((resolve) => {
+            setImmediate(() => {
+                this.written += data;
+                resolve();
+            });
+        });
     }
 
     value() {

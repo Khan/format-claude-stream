@@ -170,7 +170,7 @@ export class ClaudeStreamFormatter {
         const toolCall = UnrecognizedToolCall.parse(raw);
         const interpreter = new Interpreter(this.output, this.colorizer);
         const event = new GenericToolCall(toolCall.name, toolCall.input);
-        interpreter.process(event);
+        await interpreter.process(event);
     }
 
     private async writeLine(text: string) {

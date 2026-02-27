@@ -8,7 +8,7 @@ export class Interpreter {
         private readonly colorizer: Colorizer,
     ) {}
 
-    process(event: ClaudeIOEvent): void {
-        this.output.write(event.format(this.colorizer) + "\n");
+    process(event: ClaudeIOEvent): Promise<void> {
+        return this.output.write(event.format(this.colorizer) + "\n");
     }
 }

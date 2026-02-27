@@ -5,11 +5,11 @@ import {NullColorizer} from "./null-colorizer.ts";
 import {Interpreter} from "./interpreter.ts";
 
 describe("Interpreter", () => {
-    it("outputs a generic tool call event", () => {
+    it("outputs a generic tool call event", async () => {
         const outputFake = new OutputFake();
         const interpreter = new Interpreter(outputFake, new NullColorizer());
 
-        interpreter.process(new GenericToolCall("Hammer", {nail: 1}));
+        await interpreter.process(new GenericToolCall("Hammer", {nail: 1}));
 
         expect(outputFake.value()).toBe(`Hammer: {"nail":1}\n`);
     });
