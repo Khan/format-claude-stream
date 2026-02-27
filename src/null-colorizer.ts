@@ -16,8 +16,4 @@ export class NullColorizer implements Colorizer {
     action(text: string): string {
         return text;
     }
-
-    hex(_: string): (text: string) => string {
-        return (text) => text;
-    }
 }

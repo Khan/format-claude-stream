@@ -17,10 +17,6 @@ export class MarkupColorizer implements Colorizer {
         return this.color("action", text);
     }
 
-    hex(code: string): (text: string) => string {
-        return (text) => `[[${code} ${text}]]`;
-    }
-
     private color(name: string, text: string) {
         return `[[${name} ${text}]]`;
     }

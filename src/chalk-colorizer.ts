@@ -18,10 +18,6 @@ export class ChalkColorizer implements Colorizer {
         return this.color("#77bb77", text);
     }
 
-    hex(code: string): (text: string) => string {
-        return chalk.hex(code);
-    }
-
     private color(code: string, text: string): string {
         return chalk.hex(code)(text);
     }
