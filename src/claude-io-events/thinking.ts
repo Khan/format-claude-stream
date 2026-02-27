@@ -5,6 +5,6 @@ export class Thinking implements ClaudeIOEvent {
     constructor(private readonly thoughts: string) {}
 
     format(colorizer: Colorizer) {
-        return colorizer.claudeThinking(this.thoughts);
+        return colorizer.claudeThinking(`Thinking: ${this.thoughts}`);
     }
 }

@@ -22,12 +22,17 @@ import {UserMessageContent} from "./claude-stream-json-schema/user-message.ts";
 import {Colorizer} from "./colorizer-type.ts";
 import {Interpreter} from "./interpreter.ts";
 import {GenericToolCall} from "./claude-io-events/generic-tool-call.ts";
+import {GrepToolCall as GrepToolCallEvent} from "./claude-io-events/grep-tool-call.ts";
 
 export class ClaudeStreamFormatter {
+    interpreter: Interpreter;
+
     constructor(
         private output: Output,
         private colorizer: Colorizer,
-    ) {}
+    ) {
+        this.interpreter = new Interpreter(output, colorizer);
+    }
 
     async write(data: unknown): Promise<void> {
         const parsed = StreamJsonLine.safeParse(data);
@@ -155,12 +160,11 @@ export class ClaudeStreamFormatter {
     }
 
     private async writeGrepToolCall(toolCall: z.infer<typeof GrepToolCall>) {
-        const escapedPattern = toolCall.input.pattern.replace(/[/]/g, "\\/");
-        await this.writeLine(
-            this.colorizer.action(
-                `Grep: /${escapedPattern}/ in ${toolCall.input.path}`,
-            ),
+        const event = new GrepToolCallEvent(
+            toolCall.input.pattern,
+            toolCall.input.path,
         );
+        await this.interpreter.process(event);
     }
 
     private async writeUnrecognizedToolCall(raw: unknown) {
@@ -170,9 +174,8 @@ export class ClaudeStreamFormatter {
         // below. If no appropriate event class exists, create one in
         // src/claude-io-events.
         const toolCall = UnrecognizedToolCall.parse(raw);
-        const interpreter = new Interpreter(this.output, this.colorizer);
         const event = new GenericToolCall(toolCall.name, toolCall.input);
-        await interpreter.process(event);
+        await this.interpreter.process(event);
     }
 
     private async writeLine(text: string) {

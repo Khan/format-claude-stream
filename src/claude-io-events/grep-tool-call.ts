@@ -4,12 +4,12 @@ import {ClaudeIOEvent} from "./claude-io-event.type.ts";
 export class GrepToolCall implements ClaudeIOEvent {
     constructor(
         private readonly pattern: string,
-        private readonly path: string,
+        private readonly path = ".",
     ) {}
 
     format(colorizer: Colorizer): string {
         return colorizer.action(
-            `Searching for /${escape(this.pattern)}/ in ${this.path} ...`,
+            `Grep: /${escape(this.pattern)}/ in ${this.path}`,
         );
     }
 }

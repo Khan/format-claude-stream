@@ -5,6 +5,6 @@ export class EditToolCall implements ClaudeIOEvent {
     constructor(private readonly path: string) {}
 
     format(colorizer: Colorizer): string {
-        return colorizer.action(`Editing ${this.path} ...`);
+        return colorizer.importantAction(`Edit: ${this.path}`);
     }
 }
