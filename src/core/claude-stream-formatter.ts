@@ -1,6 +1,6 @@
 import * as z from "zod";
 import {StreamJsonLine} from "../claude-stream-json-schema/stream-json-line.ts";
-import {Output} from "./output-type.ts";
+import {Output} from "./ports/output.ts";
 import type {
     AssistantLine,
     UserLine,
@@ -10,7 +10,7 @@ import {
     ToolCall,
     UnrecognizedToolCall,
 } from "../claude-stream-json-schema/tool-calls.ts";
-import {Colorizer} from "./colorizer.ts";
+import {Colorizer} from "./ports/colorizer.ts";
 import {Interpreter} from "./interpreter.ts";
 import {GenericToolCall} from "./generic-tool-call.ts";
 import {GrepToolCall} from "./grep-tool-call.ts";

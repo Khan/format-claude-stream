@@ -1,4 +1,4 @@
-import {Output} from "./core/output-type.ts";
+import {Output} from "./core/ports/output.ts";
 
 export class StandardOutput implements Output {
     async write(data: string): Promise<void> {

@@ -1,6 +1,6 @@
 import {ClaudeIOEvent} from "./claude-io-event.type.ts";
-import {Colorizer} from "./colorizer.ts";
-import {Output} from "./output-type.ts";
+import {Colorizer} from "./ports/colorizer.ts";
+import {Output} from "./ports/output.ts";
 
 export class Interpreter {
     constructor(
