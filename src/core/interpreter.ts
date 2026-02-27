@@ -1,4 +1,4 @@
-import {ClaudeIOEvent} from "./claude-io-event.type.ts";
+import {ClaudeIOEvent} from "./events/claude-io-event.type.ts";
 import {Colorizer} from "./ports/colorizer.ts";
 import {Output} from "./ports/output.ts";
 

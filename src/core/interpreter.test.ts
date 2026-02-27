@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import {OutputFake} from "./ports/output-fake.ts";
-import {GenericToolCall} from "./generic-tool-call.ts";
+import {GenericToolCall} from "./events/generic-tool-call.ts";
 import {NullColorizer} from "./ports/null-colorizer.ts";
 import {Interpreter} from "./interpreter.ts";
 

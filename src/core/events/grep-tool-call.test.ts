@@ -1,6 +1,6 @@
 import {describe, expect, it} from "@jest/globals";
 import {GrepToolCall} from "./grep-tool-call.ts";
-import {NullColorizer} from "./ports/null-colorizer.ts";
+import {NullColorizer} from "../ports/null-colorizer.ts";
 
 const nullColorizer = new NullColorizer();
 

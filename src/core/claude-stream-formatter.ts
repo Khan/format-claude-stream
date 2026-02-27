@@ -12,16 +12,16 @@ import {
 } from "../claude-stream-json-schema/tool-calls.ts";
 import {Colorizer} from "./ports/colorizer.ts";
 import {Interpreter} from "./interpreter.ts";
-import {GenericToolCall} from "./generic-tool-call.ts";
-import {GrepToolCall} from "./grep-tool-call.ts";
-import {EditToolCall} from "./edit-tool-call.ts";
-import {ReadToolCall} from "./read-tool-call.ts";
-import {BashToolCall} from "./bash-tool-call.ts";
-import {TextOutput} from "./text-output.ts";
-import {Thinking} from "./thinking.ts";
-import {GenericToolResult} from "./generic-tool-result.ts";
-import {ClaudeIOEvent} from "./claude-io-event.type.ts";
-import {UnrecognizedJsonEvent} from "./unrecognized-json-event.ts";
+import {GenericToolCall} from "./events/generic-tool-call.ts";
+import {GrepToolCall} from "./events/grep-tool-call.ts";
+import {EditToolCall} from "./events/edit-tool-call.ts";
+import {ReadToolCall} from "./events/read-tool-call.ts";
+import {BashToolCall} from "./events/bash-tool-call.ts";
+import {TextOutput} from "./events/text-output.ts";
+import {Thinking} from "./events/thinking.ts";
+import {GenericToolResult} from "./events/generic-tool-result.ts";
+import {ClaudeIOEvent} from "./events/claude-io-event.type.ts";
+import {UnrecognizedJsonEvent} from "./events/unrecognized-json-event.ts";
 import {UnreachableCodeError} from "../unreachable-code-error.ts";
 
 export class ClaudeStreamFormatter {
