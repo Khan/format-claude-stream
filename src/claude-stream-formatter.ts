@@ -18,10 +18,10 @@ import {UserMessageContent} from "./claude-stream-json-schema/user-message.ts";
 import {Colorizer} from "./colorizer-type.ts";
 import {Interpreter} from "./interpreter.ts";
 import {GenericToolCall} from "./claude-io-events/generic-tool-call.ts";
-import {GrepToolCall as GrepToolCallEvent} from "./claude-io-events/grep-tool-call.ts";
-import {EditToolCall as EditToolCallEvent} from "./claude-io-events/edit-tool-call.ts";
-import {ReadToolCall as ReadToolCallEvent} from "./claude-io-events/read-tool-call.ts";
-import {BashToolCall as BashToolCallEvent} from "./claude-io-events/bash-tool-call.ts";
+import {GrepToolCall} from "./claude-io-events/grep-tool-call.ts";
+import {EditToolCall} from "./claude-io-events/edit-tool-call.ts";
+import {ReadToolCall} from "./claude-io-events/read-tool-call.ts";
+import {BashToolCall} from "./claude-io-events/bash-tool-call.ts";
 import {TextOutput} from "./claude-io-events/text-output.ts";
 import {Thinking} from "./claude-io-events/thinking.ts";
 import {GenericToolResult} from "./claude-io-events/generic-tool-result.ts";
@@ -115,13 +115,13 @@ export class ClaudeStreamFormatter {
 
         switch (toolCall.name) {
             case "Bash":
-                return new BashToolCallEvent(toolCall.input.command);
+                return new BashToolCall(toolCall.input.command);
             case "Read":
-                return new ReadToolCallEvent(toolCall.input.file_path);
+                return new ReadToolCall(toolCall.input.file_path);
             case "Edit":
-                return new EditToolCallEvent(toolCall.input.file_path);
+                return new EditToolCall(toolCall.input.file_path);
             case "Grep":
-                return new GrepToolCallEvent(
+                return new GrepToolCall(
                     toolCall.input.pattern,
                     toolCall.input.path,
                 );
