@@ -38,6 +38,9 @@ export class ClaudeStreamFormatter {
         }
     }
 
+    // TODO: move the `parse*` methods in this class to the formats/ directory.
+    // Use Zod's .transform() combinator so that each parser returns a
+    // ClaudeIOEvent subtype (or ClaudeIOEvent[]).
     private parseEvents(data: unknown): ClaudeIOEvent[] {
         const parsed = StreamJsonLine.safeParse(data);
 
