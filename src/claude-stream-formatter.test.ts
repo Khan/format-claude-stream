@@ -3,8 +3,10 @@ import {OutputFake} from "./output.fake.ts";
 import dedent from "dedent";
 import {ClaudeStreamFormatter} from "./claude-stream-formatter.ts";
 import {NullColorizer} from "./null-colorizer.ts";
+import {MarkupColorizer} from "./markup-colorizer.ts";
 
 const nullColorizer = new NullColorizer();
+const markupColorizer = new MarkupColorizer();
 
 describe("ClaudeStreamFormatter", () => {
     it("does not write to output when merely created", () => {
@@ -13,7 +15,7 @@ describe("ClaudeStreamFormatter", () => {
         expect(outputFake.value()).toBe("");
     });
 
-    it("ignores empty JSON payloads", async () => {
+    it("prints empty JSON payloads", async () => {
         const outputFake = new OutputFake();
         const pf = new ClaudeStreamFormatter(outputFake, nullColorizer);
 
@@ -22,7 +24,7 @@ describe("ClaudeStreamFormatter", () => {
         expect(outputFake.value()).toBe("Unrecognized JSON: {}\n");
     });
 
-    it("ignores JSON payloads with unrecognized `type`", async () => {
+    it("prints JSON payloads with unrecognized `type`", async () => {
         const outputFake = new OutputFake();
         const pf = new ClaudeStreamFormatter(outputFake, nullColorizer);
 
@@ -56,6 +58,33 @@ describe("ClaudeStreamFormatter", () => {
         });
 
         expect(outputFake.value()).toBe("$ pnpm test 2>&1 | tail -100\n");
+    });
+
+    it("colorizes a Bash tool call", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ClaudeStreamFormatter(outputFake, markupColorizer);
+
+        await pf.write({
+            type: "assistant",
+            message: {
+                type: "message",
+                content: [
+                    {
+                        type: "tool_use",
+                        name: "Bash",
+                        input: {
+                            command: "pnpm test 2>&1 | tail -100",
+                            description: "Run all tests",
+                            timeout: 300000,
+                        },
+                    },
+                ],
+            },
+        });
+
+        expect(outputFake.value()).toBe(
+            "[[#88ee88 $ pnpm test 2>&1 | tail -100]]\n",
+        );
     });
 
     it("formats a Read tool call", async () => {
@@ -126,6 +155,28 @@ describe("ClaudeStreamFormatter", () => {
         });
 
         expect(outputFake.value()).toBe("Thinking: Mmm... donuts\n");
+    });
+
+    it("colorizes thinking", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ClaudeStreamFormatter(outputFake, markupColorizer);
+
+        await pf.write({
+            type: "assistant",
+            message: {
+                type: "message",
+                content: [
+                    {
+                        type: "thinking",
+                        thinking: "Mmm... donuts",
+                    },
+                ],
+            },
+        });
+
+        expect(outputFake.value()).toBe(
+            "[[#bbaa66 Thinking: Mmm... donuts]]\n",
+        );
     });
 
     it("formats a grep tool call", async () => {
@@ -219,5 +270,25 @@ describe("ClaudeStreamFormatter", () => {
         });
 
         expect(outputFake.value()).toBe("Hello!\n");
+    });
+
+    it("colorizes text messages", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ClaudeStreamFormatter(outputFake, markupColorizer);
+
+        await pf.write({
+            type: "assistant",
+            message: {
+                type: "message",
+                content: [
+                    {
+                        type: "text",
+                        text: "Hello!",
+                    },
+                ],
+            },
+        });
+
+        expect(outputFake.value()).toBe("[[#ffcc00 Hello!]]\n");
     });
 });
