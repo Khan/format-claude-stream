@@ -163,7 +163,10 @@ export class ClaudeStreamFormatter {
 
     private async writeUnrecognizedToolCall(raw: unknown) {
         // TODO: Interpreter is a strangler fig that will eventually replace
-        // the ClaudeStreamFormatter.
+        // the ClaudeStreamFormatter. Replace the other occurrences of
+        // this.writeLine() in this class with interpreter.process() calls as
+        // below. If no appropriate event class exists, create one in
+        // src/claude-io-events.
         const toolCall = UnrecognizedToolCall.parse(raw);
         const interpreter = new Interpreter(this.output, this.colorizer)
         const event = new GenericToolCall(toolCall.name, toolCall.input)
