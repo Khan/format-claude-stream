@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "verify": "tsc && jest && prettier --check src",
+    "verify": "prettier --check src && tsc && jest",
     "test": "jest",
     "fix": "prettier --write src",
     "prepare": "husky"
