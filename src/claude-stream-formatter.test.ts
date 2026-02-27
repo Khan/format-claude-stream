@@ -198,9 +198,7 @@ describe("ClaudeStreamFormatter", () => {
             },
         });
 
-        expect(outputFake.value()).toBe(
-            `UncannyValley: {"foo":"bar"}\n`,
-        );
+        expect(outputFake.value()).toBe(`UncannyValley: {"foo":"bar"}\n`);
     });
 
     it("writes a text message intended for the user", async () => {

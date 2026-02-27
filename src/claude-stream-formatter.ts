@@ -20,8 +20,8 @@ import {
 } from "./claude-stream-json-schema/tool-calls.ts";
 import {UserMessageContent} from "./claude-stream-json-schema/user-message.ts";
 import {Colorizer} from "./colorizer.type.ts";
-import { Interpreter } from "./interpreter.ts";
-import { GenericToolCall } from "./claude-io-events/generic-tool-call.ts";
+import {Interpreter} from "./interpreter.ts";
+import {GenericToolCall} from "./claude-io-events/generic-tool-call.ts";
 
 export class ClaudeStreamFormatter {
     private dimYellow: (text: string) => string;
@@ -168,8 +168,8 @@ export class ClaudeStreamFormatter {
         // below. If no appropriate event class exists, create one in
         // src/claude-io-events.
         const toolCall = UnrecognizedToolCall.parse(raw);
-        const interpreter = new Interpreter(this.output, this.colorizer)
-        const event = new GenericToolCall(toolCall.name, toolCall.input)
+        const interpreter = new Interpreter(this.output, this.colorizer);
+        const event = new GenericToolCall(toolCall.name, toolCall.input);
         interpreter.process(event);
     }
 
