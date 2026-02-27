@@ -1,4 +1,4 @@
-import {Colorizer} from "../colorizer-type.ts";
+import {Colorizer} from "./colorizer.ts";
 import {ClaudeIOEvent} from "./claude-io-event.type.ts";
 
 export class Thinking implements ClaudeIOEvent {

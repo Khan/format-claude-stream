@@ -1,28 +1,28 @@
 import * as z from "zod";
-import {StreamJsonLine} from "./claude-stream-json-schema/stream-json-line.ts";
-import {Output} from "./output.type.ts";
+import {StreamJsonLine} from "../claude-stream-json-schema/stream-json-line.ts";
+import {Output} from "./output-type.ts";
 import type {
     AssistantLine,
     UserLine,
-} from "./claude-stream-json-schema/stream-json-line.ts";
-import {ToolUseMessageContent} from "./claude-stream-json-schema/assistant-message.ts";
+} from "../claude-stream-json-schema/stream-json-line.ts";
+import {ToolUseMessageContent} from "../claude-stream-json-schema/assistant-message.ts";
 import {
     ToolCall,
     UnrecognizedToolCall,
-} from "./claude-stream-json-schema/tool-calls.ts";
-import {Colorizer} from "./colorizer-type.ts";
+} from "../claude-stream-json-schema/tool-calls.ts";
+import {Colorizer} from "./colorizer.ts";
 import {Interpreter} from "./interpreter.ts";
-import {GenericToolCall} from "./core/generic-tool-call.ts";
-import {GrepToolCall} from "./core/grep-tool-call.ts";
-import {EditToolCall} from "./core/edit-tool-call.ts";
-import {ReadToolCall} from "./core/read-tool-call.ts";
-import {BashToolCall} from "./core/bash-tool-call.ts";
-import {TextOutput} from "./core/text-output.ts";
-import {Thinking} from "./core/thinking.ts";
-import {GenericToolResult} from "./core/generic-tool-result.ts";
-import {ClaudeIOEvent} from "./core/claude-io-event.type.ts";
-import {UnrecognizedJsonEvent} from "./core/unrecognized-json-event.ts";
-import {UnreachableCodeError} from "./unreachable-code-error.ts";
+import {GenericToolCall} from "./generic-tool-call.ts";
+import {GrepToolCall} from "./grep-tool-call.ts";
+import {EditToolCall} from "./edit-tool-call.ts";
+import {ReadToolCall} from "./read-tool-call.ts";
+import {BashToolCall} from "./bash-tool-call.ts";
+import {TextOutput} from "./text-output.ts";
+import {Thinking} from "./thinking.ts";
+import {GenericToolResult} from "./generic-tool-result.ts";
+import {ClaudeIOEvent} from "./claude-io-event.type.ts";
+import {UnrecognizedJsonEvent} from "./unrecognized-json-event.ts";
+import {UnreachableCodeError} from "../unreachable-code-error.ts";
 
 export class ClaudeStreamFormatter {
     interpreter: Interpreter;

@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import {Colorizer} from "./colorizer-type.ts";
+import {Colorizer} from "./core/colorizer.ts";
 
 export class ChalkColorizer implements Colorizer {
     claudeThinking(text: string): string {

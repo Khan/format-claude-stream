@@ -1,5 +1,5 @@
 import {describe, it, expect} from "@jest/globals";
-import {OutputFake} from "./output.fake.ts";
+import {OutputFake} from "./output-fake.ts";
 import dedent from "dedent";
 import {ClaudeStreamFormatter} from "./claude-stream-formatter.ts";
 import {NullColorizer} from "./null-colorizer.ts";

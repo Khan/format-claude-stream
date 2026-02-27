@@ -1,7 +1,7 @@
 #!/usr/bin/env -S node --import @swc-node/register/esm-register
 
 import readline from "readline";
-import {ClaudeStreamFormatter} from "../src/claude-stream-formatter.ts";
+import {ClaudeStreamFormatter} from "../src/core/claude-stream-formatter.ts";
 import {StandardOutput} from "../src/standard-output.ts";
 import {ChalkColorizer} from "../src/chalk-colorizer.ts";
 

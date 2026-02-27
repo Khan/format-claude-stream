@@ -1,4 +1,4 @@
-import {Output} from "./output.type.ts";
+import {Output} from "./output-type.ts";
 
 export class OutputFake implements Output {
     private written = "";

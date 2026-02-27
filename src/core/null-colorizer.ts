@@ -1,4 +1,4 @@
-import {Colorizer} from "./colorizer-type.ts";
+import {Colorizer} from "./colorizer.ts";
 
 export class NullColorizer implements Colorizer {
     claudeThinking(text: string): string {
