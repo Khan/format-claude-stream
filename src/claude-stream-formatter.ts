@@ -143,17 +143,23 @@ export class ClaudeStreamFormatter {
     }
 
     private async writeReadToolCall(toolCall: z.infer<typeof ReadToolCall>) {
-        await this.writeLine(`Read: ${toolCall.input.file_path}`);
+        await this.writeLine(
+            this.colorizer.action(`Read: ${toolCall.input.file_path}`),
+        );
     }
 
     private async writeEditToolCall(toolCall: z.infer<typeof EditToolCall>) {
-        await this.writeLine(`Edit: ${toolCall.input.file_path}`);
+        await this.writeLine(
+            this.colorizer.importantAction(`Edit: ${toolCall.input.file_path}`),
+        );
     }
 
     private async writeGrepToolCall(toolCall: z.infer<typeof GrepToolCall>) {
         const escapedPattern = toolCall.input.pattern.replace(/[/]/g, "\\/");
         await this.writeLine(
-            `Grep: /${escapedPattern}/ in ${toolCall.input.path}`,
+            this.colorizer.action(
+                `Grep: /${escapedPattern}/ in ${toolCall.input.path}`,
+            ),
         );
     }
 

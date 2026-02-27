@@ -112,6 +112,29 @@ describe("ClaudeStreamFormatter", () => {
         `);
     });
 
+    it("colorizes a Read tool call", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ClaudeStreamFormatter(outputFake, markupColorizer);
+
+        await pf.write({
+            type: "assistant",
+            message: {
+                type: "message",
+                content: [
+                    {
+                        type: "tool_use",
+                        name: "Read",
+                        input: {
+                            file_path: "/foo/bar",
+                        },
+                    },
+                ],
+            },
+        });
+
+        expect(outputFake.value()).toBe("[[action Read: /foo/bar]]\n");
+    });
+
     it("formats an Edit tool call", async () => {
         const outputFake = new OutputFake();
         const pf = new ClaudeStreamFormatter(outputFake, nullColorizer);
@@ -135,6 +158,29 @@ describe("ClaudeStreamFormatter", () => {
         expect(outputFake.value()).toBe(dedent`
             Edit: /foo/bar\n
         `);
+    });
+
+    it("colorizes an Edit tool call", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ClaudeStreamFormatter(outputFake, markupColorizer);
+
+        await pf.write({
+            type: "assistant",
+            message: {
+                type: "message",
+                content: [
+                    {
+                        type: "tool_use",
+                        name: "Edit",
+                        input: {
+                            file_path: "/foo/bar",
+                        },
+                    },
+                ],
+            },
+        });
+
+        expect(outputFake.value()).toBe("[[importantAction Edit: /foo/bar]]\n");
     });
 
     it("formats thinking", async () => {
@@ -202,6 +248,33 @@ describe("ClaudeStreamFormatter", () => {
         });
 
         expect(outputFake.value()).toBe("Grep: /a regex/ in /my/project\n");
+    });
+
+    it("colorizes a grep tool call", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ClaudeStreamFormatter(outputFake, markupColorizer);
+
+        await pf.write({
+            type: "assistant",
+            message: {
+                type: "message",
+                content: [
+                    {
+                        type: "tool_use",
+                        name: "Grep",
+                        input: {
+                            pattern: "a regex",
+                            path: "/my/project",
+                            output_mode: "content",
+                        },
+                    },
+                ],
+            },
+        });
+
+        expect(outputFake.value()).toBe(
+            "[[action Grep: /a regex/ in /my/project]]\n",
+        );
     });
 
     it("escapes slashes in a grep pattern", async () => {
