@@ -27,13 +27,15 @@ import {EditToolCall as EditToolCallEvent} from "./claude-io-events/edit-tool-ca
 import {ReadToolCall as ReadToolCallEvent} from "./claude-io-events/read-tool-call.ts";
 import {BashToolCall as BashToolCallEvent} from "./claude-io-events/bash-tool-call.ts";
 import {TextOutput} from "./claude-io-events/text-output.ts";
+import {Thinking} from "./claude-io-events/thinking.ts";
+import {GenericToolResult} from "./claude-io-events/generic-tool-result.ts";
 
 export class ClaudeStreamFormatter {
     interpreter: Interpreter;
 
     constructor(
         private output: Output,
-        private colorizer: Colorizer,
+        colorizer: Colorizer,
     ) {
         this.interpreter = new Interpreter(output, colorizer);
     }
@@ -128,9 +130,8 @@ export class ClaudeStreamFormatter {
     private async writeThinkingMessageContent(
         data: z.infer<typeof ThinkingMessageContent>,
     ) {
-        await this.writeLine(
-            this.colorizer.claudeThinking(`Thinking: ${data.thinking}`),
-        );
+        const event = new Thinking(data.thinking);
+        await this.interpreter.process(event);
     }
 
     private async writeTextMessageContent(
@@ -143,7 +144,8 @@ export class ClaudeStreamFormatter {
     private async writeToolResultMessageContent(
         data: z.infer<typeof UserMessageContent>,
     ) {
-        await this.writeLine(data.content);
+        const event = new GenericToolResult(data.content);
+        await this.interpreter.process(event);
     }
 
     private async writeBashToolCall(toolCall: z.infer<typeof BashToolCall>) {
