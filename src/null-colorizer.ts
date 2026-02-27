@@ -16,4 +16,8 @@ export class NullColorizer implements Colorizer {
     action(text: string): string {
         return text;
     }
+
+    error(text: string): string {
+        return text;
+    }
 }

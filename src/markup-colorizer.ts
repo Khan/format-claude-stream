@@ -17,6 +17,10 @@ export class MarkupColorizer implements Colorizer {
         return this.color("action", text);
     }
 
+    error(text: string): string {
+        return this.color("error", text);
+    }
+
     private color(name: string, text: string) {
         return `[[${name} ${text}]]`;
     }

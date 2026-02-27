@@ -6,4 +6,6 @@ export interface Colorizer {
     importantAction(text: string): string;
 
     action(text: string): string;
+
+    error(text: string): string;
 }
