@@ -5,11 +5,7 @@ import type {
     AssistantLine,
     UserLine,
 } from "./claude-stream-json-schema/stream-json-line.ts";
-import {
-    TextMessageContent,
-    ThinkingMessageContent,
-    ToolUseMessageContent,
-} from "./claude-stream-json-schema/assistant-message.ts";
+import {ToolUseMessageContent} from "./claude-stream-json-schema/assistant-message.ts";
 import {
     ToolCall,
     UnrecognizedToolCall,
@@ -67,19 +63,24 @@ export class ClaudeStreamFormatter {
         }
     }
 
-    private async writeAssistantLine(data: z.infer<typeof AssistantLine>) {
-        for (const content of data.message.content) {
+    private parseOutputEvents(
+        data: z.infer<typeof AssistantLine>,
+    ): ClaudeIOEvent[] {
+        return data.message.content.map((content) => {
             switch (content.type) {
                 case "tool_use":
-                    await this.writeToolUseMessageContent(content);
-                    break;
+                    return this.parseToolCallEvent(content);
                 case "thinking":
-                    await this.writeThinkingMessageContent(content);
-                    break;
+                    return new Thinking(content.thinking);
                 case "text":
-                    await this.writeTextMessageContent(content);
-                    break;
+                    return new TextOutput(content.text);
             }
+        });
+    }
+
+    private async writeAssistantLine(data: z.infer<typeof AssistantLine>) {
+        for (const event of this.parseOutputEvents(data)) {
+            await this.interpreter.process(event);
         }
     }
 
@@ -95,13 +96,6 @@ export class ClaudeStreamFormatter {
         return data.message.content.map(({content}) => {
             return new GenericToolResult(content);
         });
-    }
-
-    private async writeToolUseMessageContent(
-        data: z.infer<typeof ToolUseMessageContent>,
-    ) {
-        const event = this.parseToolCallEvent(data);
-        await this.interpreter.process(event);
     }
 
     private parseToolCallEvent(
@@ -135,20 +129,6 @@ export class ClaudeStreamFormatter {
                         (toolCall as any).name,
                 );
         }
-    }
-
-    private async writeThinkingMessageContent(
-        data: z.infer<typeof ThinkingMessageContent>,
-    ) {
-        const event = new Thinking(data.thinking);
-        await this.interpreter.process(event);
-    }
-
-    private async writeTextMessageContent(
-        data: z.infer<typeof TextMessageContent>,
-    ) {
-        const event = new TextOutput(data.text);
-        await this.interpreter.process(event);
     }
 
     private async writeLine(text: string) {
