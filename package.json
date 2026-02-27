@@ -7,7 +7,8 @@
   "scripts": {
     "verify": "tsc && jest && prettier --check src",
     "test": "jest",
-    "fix": "prettier --write src"
+    "fix": "prettier --write src",
+    "prepare": "husky"
   },
   "packageManager": "pnpm@10.26.0",
   "prettier": {
@@ -24,6 +25,7 @@
     "@swc/jest": "^0.2.39",
     "@types/node": "^25.3.0",
     "dedent": "^1.7.1",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3"
