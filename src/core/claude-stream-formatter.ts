@@ -1,22 +1,7 @@
-import * as z from "zod";
-import {StreamJsonLine} from "../formats/stream-json-line.ts";
 import {Output} from "./ports/output.ts";
-import type {AssistantLine, UserLine} from "../formats/stream-json-line.ts";
-import {ToolUseMessageContent} from "../formats/assistant-message.ts";
-import {ToolCall, UnrecognizedToolCall} from "../formats/tool-calls.ts";
 import {Colorizer} from "./ports/colorizer.ts";
 import {Interpreter} from "./interpreter.ts";
-import {GenericToolCall} from "./events/generic-tool-call.ts";
-import {GrepToolCall} from "./events/grep-tool-call.ts";
-import {EditToolCall} from "./events/edit-tool-call.ts";
-import {ReadToolCall} from "./events/read-tool-call.ts";
-import {BashToolCall} from "./events/bash-tool-call.ts";
-import {TextOutput} from "./events/text-output.ts";
-import {Thinking} from "./events/thinking.ts";
-import {GenericToolResult} from "./events/generic-tool-result.ts";
-import {ClaudeIOEvent} from "./events/claude-io-event.type.ts";
-import {UnrecognizedJsonEvent} from "./events/unrecognized-json-event.ts";
-import {UnreachableCodeError} from "../unreachable-code-error.ts";
+import {parseEvents} from "../formats/parse-events.ts";
 
 export class ClaudeStreamFormatter {
     interpreter: Interpreter;
@@ -26,91 +11,9 @@ export class ClaudeStreamFormatter {
     }
 
     async write(data: unknown): Promise<void> {
-        const events = this.parseEvents(data);
+        const events = parseEvents(data);
         for (const event of events) {
             await this.interpreter.process(event);
-        }
-    }
-
-    // TODO: move the `parse*` methods in this class to the formats/ directory.
-    // Use Zod's .transform() combinator so that each parser returns a
-    // ClaudeIOEvent subtype (or ClaudeIOEvent[]).
-    private parseEvents(data: unknown): ClaudeIOEvent[] {
-        const parsed = StreamJsonLine.safeParse(data);
-
-        if (!parsed.success) {
-            return [new UnrecognizedJsonEvent(data)];
-        }
-
-        switch (parsed.data.type) {
-            case "assistant":
-                return this.parseOutputEvents(parsed.data);
-            case "result":
-                // Result lines seem to just repeat text output earlier by
-                // the assistant, so we ignore them.
-                return [];
-            case "stream_event":
-                // These events provide incrementally streamed data, which is
-                // also rolled up into other event types. We don't care about
-                // streaming tokens to output as fast as they come in, so we
-                // ignore these events.
-                return [];
-            case "user":
-                return this.parseToolResultEvents(parsed.data);
-            default:
-                throw new UnreachableCodeError(parsed.data);
-        }
-    }
-
-    private parseOutputEvents(
-        data: z.infer<typeof AssistantLine>,
-    ): ClaudeIOEvent[] {
-        return data.message.content.map((content) => {
-            switch (content.type) {
-                case "tool_use":
-                    return this.parseToolCallEvent(content);
-                case "thinking":
-                    return new Thinking(content.thinking);
-                case "text":
-                    return new TextOutput(content.text);
-            }
-        });
-    }
-
-    private parseToolResultEvents(
-        data: z.infer<typeof UserLine>,
-    ): ClaudeIOEvent[] {
-        return data.message.content.map(({content}) => {
-            return new GenericToolResult(content);
-        });
-    }
-
-    private parseToolCallEvent(
-        data: z.infer<typeof ToolUseMessageContent>,
-    ): ClaudeIOEvent {
-        const parsedToolCall = ToolCall.safeParse(data);
-
-        if (!parsedToolCall.success) {
-            const toolCall = UnrecognizedToolCall.parse(data);
-            return new GenericToolCall(toolCall.name, toolCall.input);
-        }
-
-        const toolCall = parsedToolCall.data;
-
-        switch (toolCall.name) {
-            case "Bash":
-                return new BashToolCall(toolCall.input.command);
-            case "Read":
-                return new ReadToolCall(toolCall.input.file_path);
-            case "Edit":
-                return new EditToolCall(toolCall.input.file_path);
-            case "Grep":
-                return new GrepToolCall(
-                    toolCall.input.pattern,
-                    toolCall.input.path,
-                );
-            default:
-                throw new UnreachableCodeError(toolCall);
         }
     }
 }

@@ -1,6 +1,10 @@
 import z from "zod";
 import {ClaudeIOEvent} from "../core/events/claude-io-event.type.ts";
-import {AssistantLine, StreamJsonLine} from "./stream-json-line.ts";
+import {
+    AssistantLine,
+    StreamJsonLine,
+    type UserLine,
+} from "./stream-json-line.ts";
 import {Thinking} from "../core/events/thinking.ts";
 import {TextOutput} from "../core/events/text-output.ts";
 import {ToolUseMessageContent} from "./assistant-message.ts";
@@ -12,27 +16,36 @@ import {EditToolCall} from "../core/events/edit-tool-call.ts";
 import {GrepToolCall} from "../core/events/grep-tool-call.ts";
 import {UnreachableCodeError} from "../unreachable-code-error.ts";
 import {UnrecognizedJsonEvent} from "../core/events/unrecognized-json-event.ts";
+import {GenericToolResult} from "../core/events/generic-tool-result.ts";
 
-export function parseEvents(raw: unknown): ClaudeIOEvent[] {
-    const parsed = StreamJsonLine.safeParse(raw);
+export function parseEvents(data: unknown): ClaudeIOEvent[] {
+    const parsed = StreamJsonLine.safeParse(data);
 
     if (!parsed.success) {
-        return [new UnrecognizedJsonEvent(raw)];
+        return [new UnrecognizedJsonEvent(data)];
     }
 
-    const data = parsed.data;
-
-    switch (data.type) {
+    switch (parsed.data.type) {
         case "assistant":
-            return parseOutputEvent(data);
-
-        default:
+            return parseOutputEvents(parsed.data);
+        case "result":
+            // Result lines seem to just repeat text output earlier by
+            // the assistant, so we ignore them.
             return [];
-        // TODO: throw unreachable code error after exhausting all cases
+        case "stream_event":
+            // These events provide incrementally streamed data, which is
+            // also rolled up into other event types. We don't care about
+            // streaming tokens to output as fast as they come in, so we
+            // ignore these events.
+            return [];
+        case "user":
+            return parseToolResultEvents(parsed.data);
+        default:
+            throw new UnreachableCodeError(parsed.data);
     }
 }
 
-function parseOutputEvent(
+function parseOutputEvents(
     data: z.infer<typeof AssistantLine>,
 ): ClaudeIOEvent[] {
     return data.message.content.map((content) => {
@@ -76,4 +89,12 @@ function parseToolCallEvent(
         default:
             throw new UnreachableCodeError(toolCall);
     }
+}
+
+function parseToolResultEvents(
+    data: z.infer<typeof UserLine>,
+): ClaudeIOEvent[] {
+    return data.message.content.map(({content}) => {
+        return new GenericToolResult(content);
+    });
 }
