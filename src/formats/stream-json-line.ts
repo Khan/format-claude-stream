@@ -28,9 +28,14 @@ const StreamEventLine = z.looseObject({
     type: z.literal("stream_event"),
 });
 
+const SystemLine = z.looseObject({
+    type: z.literal("system"),
+});
+
 export const StreamJsonLine = z.discriminatedUnion("type", [
     AssistantLine,
     UserLine,
     ResultLine,
     StreamEventLine,
+    SystemLine,
 ]);

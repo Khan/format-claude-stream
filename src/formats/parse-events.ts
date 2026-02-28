@@ -38,6 +38,10 @@ export function parseEvents(data: unknown): ClaudeIOEvent[] {
             // streaming tokens to output as fast as they come in, so we
             // ignore these events.
             return [];
+        case "system":
+            // E.g. the "type":"system", "subtype":"init" event. We ignore
+            // these.
+            return [];
         case "user":
             return parseToolResultEvents(parsed.data);
         default:
