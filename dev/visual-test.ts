@@ -1,6 +1,6 @@
 #!/usr/bin/env -S node --import @swc-node/register/esm-register
 
-import { ChalkColorizer } from "../src/chalk-colorizer";
+import { ChalkColorizer } from "../src/adapters/chalk-colorizer";
 
 function main() {
     const colors = new ChalkColorizer();
