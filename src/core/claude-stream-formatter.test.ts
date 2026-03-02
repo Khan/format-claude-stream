@@ -366,4 +366,25 @@ describe("ClaudeStreamFormatter", () => {
 
         expect(outputFake.value()).toBe("[[claudeSpeaking Hello!]]\n");
     });
+
+    it("formats a tool use error", async () => {
+        const outputFake = new OutputFake();
+        const pf = new ClaudeStreamFormatter(outputFake, markupColorizer);
+
+        await pf.write({
+            type: "user",
+            message: {
+                role: "user",
+                content: [
+                    {
+                        type: "tool_result",
+                        content: "<tool_use_error>Kablooie</tool_use_error>",
+                        is_error: true,
+                    },
+                ],
+            },
+        });
+
+        expect(outputFake.value()).toBe(`[[error Kablooie]]\n`);
+    });
 });

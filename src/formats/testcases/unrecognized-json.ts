@@ -5,3 +5,5 @@ export const data = {foo: "bar"};
 export const expected: ClaudeIOEvent[] = [
     new UnrecognizedJsonEvent({foo: "bar"}),
 ];
+
+export const expectZodParseError = true;
