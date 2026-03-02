@@ -1,5 +1,4 @@
 import {ClaudeIOEvent} from "../../core/events/claude-io-event.type.ts";
-import {ReadToolResult} from "../../core/events/read-tool-result.ts";
 
 export const data = {
     type: "user",
@@ -29,4 +28,4 @@ export const data = {
     },
 };
 
-export const expected: ClaudeIOEvent[] = [new ReadToolResult()];
+export const expected: ClaudeIOEvent[] = [];

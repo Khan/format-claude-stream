@@ -17,7 +17,6 @@ import {GrepToolCall} from "../core/events/grep-tool-call.ts";
 import {UnreachableCodeError} from "../unreachable-code-error.ts";
 import {UnrecognizedJsonEvent} from "../core/events/unrecognized-json-event.ts";
 import {GenericToolResult} from "../core/events/generic-tool-result.ts";
-import {ReadToolResult} from "../core/events/read-tool-result.ts";
 
 export function parseEvents(data: unknown): ClaudeIOEvent[] {
     const parsed = StreamJsonLine.safeParse(data);
@@ -103,11 +102,13 @@ function parseToolCallEvent(
 function parseToolResultEvents(
     data: z.infer<typeof UserLine>,
 ): ClaudeIOEvent[] {
-    const isReadResult = data.tool_use_result?.type === "text";
+    const isFileReadResult = data.tool_use_result?.type === "text";
+    // There's no need to print file contents to the terminal.
+    if (isFileReadResult) {
+        return [];
+    }
 
     return data.message.content.map(({content}) => {
-        return isReadResult
-            ? new ReadToolResult()
-            : new GenericToolResult(content);
+        return new GenericToolResult(content);
     });
 }
