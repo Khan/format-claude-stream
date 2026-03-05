@@ -2,7 +2,18 @@
   "name": "format-claude-stream",
   "version": "0.0.0",
   "description": "Formats output from `claude --output-format stream-json` as human-readable text",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Khan/format-claude-stream.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Khan/format-claude-stream/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "index.js",
+  "private": false,
   "type": "module",
   "scripts": {
     "verify": "prettier --check src && tsc && jest",
