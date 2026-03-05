@@ -12,10 +12,31 @@
 
 A CLI filter to turn Claude's streaming JSON output into human-readable text.
 
-## Usage
+## Installation
 
 ```
-claude --print --output-format stream-json | cli/main.ts
+npm install -g @khanacademy/format-claude-stream
+```
+
+## Usage
+
+### CLI
+
+```
+claude --print --output-format stream-json | format-claude-stream
+```
+
+### Library
+
+```ts
+import {ClaudeStreamFormatter, StandardOutput, ChalkColorizer} from "format-claude-stream";
+
+const claudeStreamFormatter = new ClaudeStreamFormatter(
+    new StandardOutput(),
+    new ChalkColorizer(),
+);
+
+await claudeStreamFormatter.write(JSON.parse(streamLine));
 ```
 
 ## Development
