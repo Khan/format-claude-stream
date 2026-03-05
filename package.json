@@ -31,6 +31,7 @@
     "trailingComma": "all"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.30.0",
     "@jest/globals": "^30.2.0",
     "@swc-node/register": "^1.11.1",
     "@swc/jest": "^0.2.39",
