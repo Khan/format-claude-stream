@@ -14,7 +14,7 @@ import {BashToolCall} from "../core/events/bash-tool-call.ts";
 import {ReadToolCall} from "../core/events/read-tool-call.ts";
 import {EditToolCall} from "../core/events/edit-tool-call.ts";
 import {GrepToolCall} from "../core/events/grep-tool-call.ts";
-import {UnreachableCodeError} from "../unreachable-code-error.ts";
+import {UnreachableCodeError} from "../lib/unreachable-code-error.ts";
 import {UnrecognizedJsonEvent} from "../core/events/unrecognized-json-event.ts";
 import {GenericToolResult} from "../core/events/generic-tool-result.ts";
 import {ToolUseError} from "../core/events/tool-use-error.ts";
