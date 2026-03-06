@@ -30,5 +30,8 @@ export const data = {
 };
 
 export const expected: ClaudeIOEvent[] = [
-    new GenericToolResult("content1", "toolu_01GJNdDT37zyA8U9vSShtndC"),
+    new GenericToolResult({
+        toolOutput: "content1",
+        toolUseId: "toolu_01GJNdDT37zyA8U9vSShtndC",
+    }),
 ];

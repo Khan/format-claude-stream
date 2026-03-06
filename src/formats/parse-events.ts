@@ -110,7 +110,7 @@ function parseToolResultEvents(
                     content.replace(/<\/?tool_use_error>/g, ""),
                 );
             }
-            return new GenericToolResult(content, toolUseId);
+            return new GenericToolResult({toolOutput: content, toolUseId});
         },
     );
 }

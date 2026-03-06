@@ -64,7 +64,10 @@ describe("Interpreter", () => {
 
         await interpreter.process(new ReadToolCall("/foo/bar", "id1"));
         await interpreter.process(
-            new GenericToolResult("file contents", "id1"),
+            new GenericToolResult({
+                toolOutput: "file contents",
+                toolUseId: "id1",
+            }),
         );
 
         expect(outputFake.value()).toBe("Read: /foo/bar\n");

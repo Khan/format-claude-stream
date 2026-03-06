@@ -26,5 +26,8 @@ export const data = {
 };
 
 export const expected = [
-    new GenericToolResult("content1", "toolu_01UfhLwUgqLEzsGy1NsmDEye"),
+    new GenericToolResult({
+        toolOutput: "content1",
+        toolUseId: "toolu_01UfhLwUgqLEzsGy1NsmDEye",
+    }),
 ];
