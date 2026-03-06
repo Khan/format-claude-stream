@@ -1,4 +1,4 @@
-import {GenericToolResult} from "../../core/events/generic-tool-result.ts";
+import {ToolUseSuccess} from "../../core/events/tool-use-success.ts";
 
 export const data = {
     type: "user",
@@ -26,7 +26,7 @@ export const data = {
 };
 
 export const expected = [
-    new GenericToolResult({
+    new ToolUseSuccess({
         toolOutput: "content1",
         toolUseId: "toolu_01UfhLwUgqLEzsGy1NsmDEye",
     }),

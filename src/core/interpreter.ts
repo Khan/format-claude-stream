@@ -1,5 +1,5 @@
 import {ClaudeIOEvent} from "./events/claude-io-event.type.ts";
-import {GenericToolResult} from "./events/generic-tool-result.ts";
+import {ToolUseSuccess} from "./events/tool-use-success.ts";
 import {ReadToolCall} from "./events/read-tool-call.ts";
 import {Colorizer} from "./ports/colorizer.ts";
 import {Output} from "./ports/output.ts";
@@ -28,7 +28,7 @@ export class Interpreter {
 
     private isReadResult(event: ClaudeIOEvent) {
         return (
-            event instanceof GenericToolResult &&
+            event instanceof ToolUseSuccess &&
             this.readToolUseIds.has(event.toolUseId)
         );
     }

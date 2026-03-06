@@ -16,7 +16,7 @@ import {EditToolCall} from "../core/events/edit-tool-call.ts";
 import {GrepToolCall} from "../core/events/grep-tool-call.ts";
 import {UnreachableCodeError} from "../lib/unreachable-code-error.ts";
 import {UnrecognizedJsonEvent} from "../core/events/unrecognized-json-event.ts";
-import {GenericToolResult} from "../core/events/generic-tool-result.ts";
+import {ToolUseSuccess} from "../core/events/tool-use-success.ts";
 import {ToolUseError} from "../core/events/tool-use-error.ts";
 
 export function parseEvents(data: unknown): ClaudeIOEvent[] {
@@ -113,7 +113,7 @@ function parseToolResultEvents(
                     content.replace(/<\/?tool_use_error>/g, ""),
                 );
             }
-            return new GenericToolResult({toolOutput: content, toolUseId});
+            return new ToolUseSuccess({toolOutput: content, toolUseId});
         },
     );
 }

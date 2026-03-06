@@ -5,7 +5,7 @@ export interface ConstructorParams {
     toolUseId: string;
 }
 
-export class GenericToolResult implements ClaudeIOEvent {
+export class ToolUseSuccess implements ClaudeIOEvent {
     public readonly toolOutput: string;
     public readonly toolUseId: string;
 

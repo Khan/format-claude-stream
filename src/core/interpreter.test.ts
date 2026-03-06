@@ -11,7 +11,7 @@ import {ToolUseError} from "./events/tool-use-error.ts";
 import {NullColorizer} from "./ports/null-colorizer.ts";
 import {MarkupColorizer} from "./ports/markup-colorizer.ts";
 import {Interpreter} from "./interpreter.ts";
-import {GenericToolResult} from "./events/generic-tool-result.ts";
+import {ToolUseSuccess} from "./events/tool-use-success.ts";
 
 describe("Interpreter", () => {
     it("outputs a generic tool call event", async () => {
@@ -68,7 +68,7 @@ describe("Interpreter", () => {
             new ReadToolCall({path: "/foo/bar", toolUseId: "id1"}),
         );
         await interpreter.process(
-            new GenericToolResult({
+            new ToolUseSuccess({
                 toolOutput: "file contents",
                 toolUseId: "id1",
             }),
