@@ -8,6 +8,7 @@ import {Output} from "./ports/output.ts";
 export class Interpreter {
     private readonly readToolUseIds = new Set<string>();
     private readonly editToolUseIds = new Set<string>();
+    private lastProcessedEvent: ClaudeIOEvent | null = null;
 
     constructor(
         private readonly output: Output,
@@ -22,11 +23,18 @@ export class Interpreter {
             this.editToolUseIds.add(event.toolUseId);
         }
         if (this.isReadResult(event)) {
+            this.lastProcessedEvent = event;
             return;
         }
         if (this.isEditResult(event)) {
+            this.lastProcessedEvent = event;
             return;
         }
+        if (this.lastProcessedEvent && !(event instanceof ToolUseSuccess)) {
+            await this.output.write("\n");
+        }
+
+        this.lastProcessedEvent = event;
         return this.output.write(event.format(this.colorizer) + "\n");
     }
 

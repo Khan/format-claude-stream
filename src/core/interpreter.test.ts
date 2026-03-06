@@ -239,4 +239,16 @@ describe("Interpreter", () => {
 
         expect(outputFake.value()).toBe(`[[error Kablooie]]\n`);
     });
+
+    it("inserts a newline between a tool call output and a Bash call", async () => {
+        const outputFake = new OutputFake();
+        const interpreter = new Interpreter(outputFake, new NullColorizer());
+
+        await interpreter.process(
+            new ToolUseSuccess({toolOutput: "the output", toolUseId: ""}),
+        );
+        await interpreter.process(new BashToolCall("echo hello"));
+
+        expect(outputFake.value()).toBe("the output\n\n$ echo hello\n");
+    });
 });
