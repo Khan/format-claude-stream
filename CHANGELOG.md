@@ -1,5 +1,15 @@
 # @khanacademy/format-claude-stream
 
+## 0.1.0
+
+### Minor Changes
+
+- 2fa7acc: Previously, Edit tool calls produced output like "The file `<path>` has been updated successfully." This noise is now suppressed.
+
+### Patch Changes
+
+- 305932f: Suppress output of Read calls more reliably, preventing file contents from getting dumped to the terminal.
+
 ## 0.0.3
 
 ### Patch Changes
