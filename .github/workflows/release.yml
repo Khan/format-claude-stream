@@ -53,6 +53,14 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
 
+      # NPM trusted publishing requires npm CLI v11.5.1+. Node.js 22 ships with
+      # npm 10.x, so we need to upgrade. Note that pnpm uses npm under the hood
+      # for publishes.
+      - name: Upgrade npm for OIDC support
+        run: |
+          npm install -g npm@11.11.0
+          echo "✅ npm upgraded to $(npm --version)"
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@c48e67d110a68bc90ccf1098e9646092baacaa87 # v1.6.0
