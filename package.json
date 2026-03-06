@@ -13,7 +13,7 @@
     "access": "public",
     "provenance": true
   },
-  "bin": "cli/main.ts",
+  "bin": "dist/cli/main.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "private": false,
@@ -39,6 +39,7 @@
     "@changesets/cli": "^2.30.0",
     "@jest/globals": "^30.2.0",
     "@swc/jest": "^0.2.39",
+    "@swc-node/register": "^1.11.1",
     "@types/node": "^25.3.0",
     "dedent": "^1.7.1",
     "husky": "^9.1.7",
@@ -47,7 +48,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@swc-node/register": "^1.11.1",
     "chalk": "^5.6.2",
     "zod": "^4.3.6"
   }
