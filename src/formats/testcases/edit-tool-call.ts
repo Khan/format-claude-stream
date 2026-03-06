@@ -46,5 +46,8 @@ export const data = {
 };
 
 export const expected: ClaudeIOEvent[] = [
-    new EditToolCall("interactive-graph.tsx", "toolu_01KTyU8BkuKhTuY7HqNP8QVE"),
+    new EditToolCall({
+        path: "interactive-graph.tsx",
+        toolUseId: "toolu_01KTyU8BkuKhTuY7HqNP8QVE",
+    }),
 ];

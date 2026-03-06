@@ -92,7 +92,9 @@ describe("Interpreter", () => {
         const outputFake = new OutputFake();
         const interpreter = new Interpreter(outputFake, new NullColorizer());
 
-        await interpreter.process(new EditToolCall("/foo/bar", ""));
+        await interpreter.process(
+            new EditToolCall({path: "/foo/bar", toolUseId: ""}),
+        );
 
         expect(outputFake.value()).toBe("Edit: /foo/bar\n");
     });
@@ -101,7 +103,9 @@ describe("Interpreter", () => {
         const outputFake = new OutputFake();
         const interpreter = new Interpreter(outputFake, new MarkupColorizer());
 
-        await interpreter.process(new EditToolCall("/foo/bar", ""));
+        await interpreter.process(
+            new EditToolCall({path: "/foo/bar", toolUseId: ""}),
+        );
 
         expect(outputFake.value()).toBe("[[importantAction Edit: /foo/bar]]\n");
     });
