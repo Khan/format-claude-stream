@@ -1,11 +1,13 @@
 import {ClaudeIOEvent} from "./events/claude-io-event.type.ts";
 import {ToolUseSuccess} from "./events/tool-use-success.ts";
 import {ReadToolCall} from "./events/read-tool-call.ts";
+import {EditToolCall} from "./events/edit-tool-call.ts";
 import {Colorizer} from "./ports/colorizer.ts";
 import {Output} from "./ports/output.ts";
 
 export class Interpreter {
     private readonly readToolUseIds = new Set<string>();
+    private readonly editToolUseIds = new Set<string>();
 
     constructor(
         private readonly output: Output,
@@ -16,10 +18,20 @@ export class Interpreter {
         if (this.isReadToolCall(event)) {
             this.readToolUseIds.add(event.toolUseId);
         }
+        if (this.isEditToolCall(event)) {
+            this.editToolUseIds.add(event.toolUseId);
+        }
         if (this.isReadResult(event)) {
             return;
         }
+        if (this.isEditResult(event)) {
+            return;
+        }
         return this.output.write(event.format(this.colorizer) + "\n");
+    }
+
+    private isEditToolCall(event: ClaudeIOEvent) {
+        return event instanceof EditToolCall;
     }
 
     private isReadToolCall(event: ClaudeIOEvent) {
@@ -30,6 +42,13 @@ export class Interpreter {
         return (
             event instanceof ToolUseSuccess &&
             this.readToolUseIds.has(event.toolUseId)
+        );
+    }
+
+    private isEditResult(event: ClaudeIOEvent) {
+        return (
+            event instanceof ToolUseSuccess &&
+            this.editToolUseIds.has(event.toolUseId)
         );
     }
 }

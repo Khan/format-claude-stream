@@ -77,6 +77,49 @@ describe("Interpreter", () => {
         expect(outputFake.value()).toBe("Read: /foo/bar\n");
     });
 
+    it("does not output an Edit tool result", async () => {
+        // The result of successful Edit tool calls is always "The file <path>
+        // has been updated successfully." We don't really need to see that
+        // printed to the terminal.
+        const outputFake = new OutputFake();
+        const interpreter = new Interpreter(outputFake, new NullColorizer());
+
+        await interpreter.process(
+            new EditToolCall({path: "/foo/bar", toolUseId: "id1"}),
+        );
+        await interpreter.process(
+            new ToolUseSuccess({
+                toolOutput: "file contents",
+                toolUseId: "id1",
+            }),
+        );
+
+        expect(outputFake.value()).toBe("Edit: /foo/bar\n");
+    });
+
+    it("does not output an Edit tool result when there is another intervening event", async () => {
+        // The result of successful Edit tool calls is always "The file <path>
+        // has been updated successfully." We don't really need to see that
+        // printed to the terminal.
+        const outputFake = new OutputFake();
+        const interpreter = new Interpreter(outputFake, new NullColorizer());
+
+        await interpreter.process(
+            new EditToolCall({path: "/foo/bar", toolUseId: "id1"}),
+        );
+        await interpreter.process(
+            new ToolUseSuccess({toolOutput: "irrelevant", toolUseId: "id2"}),
+        );
+        await interpreter.process(
+            new ToolUseSuccess({
+                toolOutput: "file contents",
+                toolUseId: "id1",
+            }),
+        );
+
+        expect(outputFake.value()).toBe("Edit: /foo/bar\nirrelevant\n");
+    });
+
     it("colorizes a Read tool call", async () => {
         const outputFake = new OutputFake();
         const interpreter = new Interpreter(outputFake, new MarkupColorizer());
