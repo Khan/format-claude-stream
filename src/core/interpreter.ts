@@ -8,7 +8,7 @@ import {Output} from "./ports/output.ts";
 export class Interpreter {
     private readonly readToolUseIds = new Set<string>();
     private readonly editToolUseIds = new Set<string>();
-    private lastProcessedEvent: ClaudeIOEvent | null = null;
+    private lastWrittenEvent: ClaudeIOEvent | null = null;
 
     constructor(
         private readonly output: Output,
@@ -16,23 +16,42 @@ export class Interpreter {
     ) {}
 
     async process(event: ClaudeIOEvent): Promise<void> {
-        try {
-            if (this.isReadToolCall(event)) {
-                this.readToolUseIds.add(event.toolUseId);
-            }
-            if (this.isEditToolCall(event)) {
-                this.editToolUseIds.add(event.toolUseId);
-            }
-            if (this.isReadResult(event) || this.isEditResult(event)) {
-                return;
-            }
-            if (this.lastProcessedEvent && !(event instanceof ToolUseSuccess)) {
-                await this.output.write("\n");
-            }
-            return this.output.write(event.format(this.colorizer) + "\n");
-        } finally {
-            this.lastProcessedEvent = event;
+        if (this.isReadToolCall(event)) {
+            this.readToolUseIds.add(event.toolUseId);
         }
+        if (this.isEditToolCall(event)) {
+            this.editToolUseIds.add(event.toolUseId);
+        }
+        if (this.isReadResult(event) || this.isEditResult(event)) {
+            return;
+        }
+        if (this.needsBlankLineBefore(event)) {
+            await this.output.write("\n");
+        }
+        await this.output.write(event.format(this.colorizer) + "\n");
+        this.lastWrittenEvent = event;
+    }
+
+    private needsBlankLineBefore(event: ClaudeIOEvent): boolean {
+        // Don't write a blank line at the very beginning of the output.
+        if (this.lastWrittenEvent == null) {
+            return false;
+        }
+
+        // Don't write a blank line between a tool call and its result.
+        if (event instanceof ToolUseSuccess) {
+            return false;
+        }
+
+        // Don't write a blank line between consecutive file operations
+        if (
+            this.isFileCrudOp(event) &&
+            this.isFileCrudOp(this.lastWrittenEvent)
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     private isEditToolCall(event: ClaudeIOEvent) {
@@ -41,6 +60,11 @@ export class Interpreter {
 
     private isReadToolCall(event: ClaudeIOEvent) {
         return event instanceof ReadToolCall;
+    }
+
+    // TODO: Fix feature envy; move isFileCrudOp to ClaudeIOEvent.
+    private isFileCrudOp(event: ClaudeIOEvent) {
+        return this.isReadToolCall(event) || this.isEditToolCall(event);
     }
 
     private isReadResult(event: ClaudeIOEvent) {

@@ -12,6 +12,7 @@ import {NullColorizer} from "./ports/null-colorizer.ts";
 import {MarkupColorizer} from "./ports/markup-colorizer.ts";
 import {Interpreter} from "./interpreter.ts";
 import {ToolUseSuccess} from "./events/tool-use-success.ts";
+import {ClaudeIOEvent} from "./events/claude-io-event.type.js";
 
 describe("Interpreter", () => {
     it("outputs a generic tool call event", async () => {
@@ -240,7 +241,7 @@ describe("Interpreter", () => {
         expect(outputFake.value()).toBe(`[[error Kablooie]]\n`);
     });
 
-    it("inserts a newline between a tool call output and a Bash call", async () => {
+    it("outputs a blank line between a tool call output and a Bash call", async () => {
         const outputFake = new OutputFake();
         const interpreter = new Interpreter(outputFake, new NullColorizer());
 
@@ -250,5 +251,43 @@ describe("Interpreter", () => {
         await interpreter.process(new BashToolCall("echo hello"));
 
         expect(outputFake.value()).toBe("the output\n\n$ echo hello\n");
+    });
+
+    it("outputs a blank line between a tool call output and a Read call", async () => {
+        const outputFake = new OutputFake();
+        const interpreter = new Interpreter(outputFake, new NullColorizer());
+
+        await interpreter.process(
+            new ToolUseSuccess({toolOutput: "the output", toolUseId: ""}),
+        );
+        await interpreter.process(
+            new ReadToolCall({path: "/foo.txt", toolUseId: ""}),
+        );
+
+        expect(outputFake.value()).toBe("the output\n\nRead: /foo.txt\n");
+    });
+
+    it("does not output a blank line between file operations", async () => {
+        const outputFake = new OutputFake();
+        const interpreter = new Interpreter(outputFake, new NullColorizer());
+
+        const events: ClaudeIOEvent[] = [
+            new ReadToolCall({path: "/foo.txt", toolUseId: "1"}),
+            new ToolUseSuccess({toolOutput: "", toolUseId: "1"}),
+            new ReadToolCall({path: "/bar.txt", toolUseId: "2"}),
+            new ToolUseSuccess({toolOutput: "", toolUseId: "2"}),
+            new EditToolCall({path: "/foo.txt", toolUseId: "3"}),
+            new ToolUseSuccess({toolOutput: "", toolUseId: "3"}),
+            new EditToolCall({path: "/bar.txt", toolUseId: "4"}),
+            new ToolUseSuccess({toolOutput: "", toolUseId: "4"}),
+        ];
+
+        for (const event of events) {
+            await interpreter.process(event);
+        }
+
+        expect(outputFake.value()).toBe(
+            "Read: /foo.txt\nRead: /bar.txt\nEdit: /foo.txt\nEdit: /bar.txt\n",
+        );
     });
 });
