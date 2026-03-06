@@ -16,26 +16,23 @@ export class Interpreter {
     ) {}
 
     async process(event: ClaudeIOEvent): Promise<void> {
-        if (this.isReadToolCall(event)) {
-            this.readToolUseIds.add(event.toolUseId);
-        }
-        if (this.isEditToolCall(event)) {
-            this.editToolUseIds.add(event.toolUseId);
-        }
-        if (this.isReadResult(event)) {
+        try {
+            if (this.isReadToolCall(event)) {
+                this.readToolUseIds.add(event.toolUseId);
+            }
+            if (this.isEditToolCall(event)) {
+                this.editToolUseIds.add(event.toolUseId);
+            }
+            if (this.isReadResult(event) || this.isEditResult(event)) {
+                return;
+            }
+            if (this.lastProcessedEvent && !(event instanceof ToolUseSuccess)) {
+                await this.output.write("\n");
+            }
+            return this.output.write(event.format(this.colorizer) + "\n");
+        } finally {
             this.lastProcessedEvent = event;
-            return;
         }
-        if (this.isEditResult(event)) {
-            this.lastProcessedEvent = event;
-            return;
-        }
-        if (this.lastProcessedEvent && !(event instanceof ToolUseSuccess)) {
-            await this.output.write("\n");
-        }
-
-        this.lastProcessedEvent = event;
-        return this.output.write(event.format(this.colorizer) + "\n");
     }
 
     private isEditToolCall(event: ClaudeIOEvent) {
