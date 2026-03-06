@@ -6,8 +6,7 @@ import {Colorizer} from "./ports/colorizer.ts";
 import {Output} from "./ports/output.ts";
 
 export class Interpreter {
-    private readonly readToolUseIds = new Set<string>();
-    private readonly editToolUseIds = new Set<string>();
+    private readonly fileCrudToolUseIds = new Set<string>();
     private lastWrittenEvent: ClaudeIOEvent | null = null;
 
     constructor(
@@ -16,13 +15,10 @@ export class Interpreter {
     ) {}
 
     async process(event: ClaudeIOEvent): Promise<void> {
-        if (this.isReadToolCall(event)) {
-            this.readToolUseIds.add(event.toolUseId);
+        if (this.isFileCrudOp(event)) {
+            this.fileCrudToolUseIds.add(event.toolUseId);
         }
-        if (this.isEditToolCall(event)) {
-            this.editToolUseIds.add(event.toolUseId);
-        }
-        if (this.isReadResult(event) || this.isEditResult(event)) {
+        if (this.isFileCrudResult(event)) {
             return;
         }
         if (this.needsBlankLineBefore(event)) {
@@ -54,30 +50,15 @@ export class Interpreter {
         return true;
     }
 
-    private isEditToolCall(event: ClaudeIOEvent) {
-        return event instanceof EditToolCall;
-    }
-
-    private isReadToolCall(event: ClaudeIOEvent) {
-        return event instanceof ReadToolCall;
-    }
-
     // TODO: Fix feature envy; move isFileCrudOp to ClaudeIOEvent.
     private isFileCrudOp(event: ClaudeIOEvent) {
-        return this.isReadToolCall(event) || this.isEditToolCall(event);
+        return event instanceof ReadToolCall || event instanceof EditToolCall;
     }
 
-    private isReadResult(event: ClaudeIOEvent) {
+    private isFileCrudResult(event: ClaudeIOEvent) {
         return (
             event instanceof ToolUseSuccess &&
-            this.readToolUseIds.has(event.toolUseId)
-        );
-    }
-
-    private isEditResult(event: ClaudeIOEvent) {
-        return (
-            event instanceof ToolUseSuccess &&
-            this.editToolUseIds.has(event.toolUseId)
+            this.fileCrudToolUseIds.has(event.toolUseId)
         );
     }
 }
