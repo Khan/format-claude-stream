@@ -10,7 +10,8 @@
     "url": "https://github.com/Khan/format-claude-stream/issues"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "bin": "cli/main.ts",
   "main": "dist/index.js",
