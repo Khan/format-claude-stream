@@ -8,8 +8,6 @@ import {MarkupColorizer} from "./ports/markup-colorizer.ts";
 const nullColorizer = new NullColorizer();
 const markupColorizer = new MarkupColorizer();
 
-// TODO: Move these tests to interpreter.test.ts. Rewrite them to call
-// Interpreter.process() directly instead of ClaudeStreamFormatter.write().
 describe("ClaudeStreamFormatter", () => {
     it("does not write to output when merely created", () => {
         const outputFake = new OutputFake();
@@ -35,31 +33,6 @@ describe("ClaudeStreamFormatter", () => {
         expect(outputFake.value()).toBe(
             `Unrecognized JSON: {"type":"bork-bork-bork"}\n`,
         );
-    });
-
-    it("formats a Bash tool call", async () => {
-        const outputFake = new OutputFake();
-        const pf = new ClaudeStreamFormatter(outputFake, nullColorizer);
-
-        await pf.write({
-            type: "assistant",
-            message: {
-                type: "message",
-                content: [
-                    {
-                        type: "tool_use",
-                        name: "Bash",
-                        input: {
-                            command: "pnpm test 2>&1 | tail -100",
-                            description: "Run all tests",
-                            timeout: 300000,
-                        },
-                    },
-                ],
-            },
-        });
-
-        expect(outputFake.value()).toBe("$ pnpm test 2>&1 | tail -100\n");
     });
 
     it("colorizes a Bash tool call", async () => {
