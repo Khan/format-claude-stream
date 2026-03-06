@@ -41,8 +41,8 @@ export class Interpreter {
 
         // Don't write a blank line between consecutive file operations
         if (
-            this.isFileCrudOp(event) &&
-            this.isFileCrudOp(this.lastWrittenEvent)
+            this.isFileCrudOp(this.lastWrittenEvent) &&
+            this.isFileCrudOp(event)
         ) {
             return false;
         }
