@@ -14,18 +14,18 @@ describe("ClaudeStreamFormatter", () => {
 
     it("prints empty JSON payloads", async () => {
         const outputFake = new OutputFake();
-        const pf = new ClaudeStreamFormatter(outputFake, nullColorizer);
+        const csf = new ClaudeStreamFormatter(outputFake, nullColorizer);
 
-        await pf.write({});
+        await csf.write({});
 
         expect(outputFake.value()).toBe("Unrecognized JSON: {}\n");
     });
 
     it("prints JSON payloads with unrecognized `type`", async () => {
         const outputFake = new OutputFake();
-        const pf = new ClaudeStreamFormatter(outputFake, nullColorizer);
+        const csf = new ClaudeStreamFormatter(outputFake, nullColorizer);
 
-        await pf.write({type: "bork-bork-bork"});
+        await csf.write({type: "bork-bork-bork"});
 
         expect(outputFake.value()).toBe(
             `Unrecognized JSON: {"type":"bork-bork-bork"}\n`,
