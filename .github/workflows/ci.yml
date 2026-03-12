@@ -32,11 +32,6 @@ jobs:
         with:
           run_install: false
 
-      # TODO: is 'Get changed files' needed? Nothing uses 'changed'.
-      - name: Get changed files
-        uses: Khan/actions@get-changed-files-v2
-        id: changed
-
       - name: Check for changeset entries
         run: |
           pnpm install --frozen-lockfile
