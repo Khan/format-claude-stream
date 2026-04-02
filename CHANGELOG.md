@@ -1,5 +1,14 @@
 # @khanacademy/format-claude-stream
 
+## 0.1.3
+
+### Patch Changes
+
+- c47684b: Task tool calls are now formatted nicely instead of the raw JSON being dumped.
+- 7f1c749: Help text is now printed when the `-h` or `--help` flag is passed on the command line.
+- d30a5a4: Task results now render without displaying "Unrecognized JSON" errors.
+- cff684c: Subagent prompts no longer display as "Unrecognized JSON" errors.
+
 ## 0.1.2
 
 ### Patch Changes
