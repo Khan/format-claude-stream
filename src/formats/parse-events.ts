@@ -19,7 +19,11 @@ import {UnrecognizedJsonEvent} from "../core/events/unrecognized-json-event.ts";
 import {ToolUseSuccess} from "../core/events/tool-use-success.ts";
 import {ToolUseError} from "../core/events/tool-use-error.ts";
 import {TaskToolCall} from "../core/events/task-tool-call.ts";
-import {ToolResultContent} from "./zod-schemas/user-message.ts";
+import {
+    ToolResultContent,
+    UserMessageContent,
+} from "./zod-schemas/user-message.ts";
+import {prop} from "../lib/prop.ts";
 
 export function parseEvents(data: unknown): ClaudeIOEvent[] {
     const parsed = StreamJsonLine.safeParse(data);
@@ -50,7 +54,7 @@ export function parseEvents(data: unknown): ClaudeIOEvent[] {
             // every time I run `claude`.
             return [];
         case "user":
-            return parseToolResultEvents(parsed.data);
+            return parseInputEvents(parsed.data);
         default:
             throw new UnreachableCodeError(parsed.data);
     }
@@ -115,20 +119,36 @@ function parseToolCallEvent(
     }
 }
 
-function parseToolResultEvents(
-    data: z.infer<typeof UserLine>,
+function parseInputEvents(data: z.infer<typeof UserLine>): ClaudeIOEvent[] {
+    return data.message.content.flatMap(parseUserInputMessageContent);
+}
+
+function parseUserInputMessageContent(
+    message: z.infer<typeof UserMessageContent>,
 ): ClaudeIOEvent[] {
-    return data.message.content.map(
-        ({content, is_error: isError, tool_use_id: toolUseId}) => {
-            const toolOutput = toolResultContentToString(content);
-            if (isError) {
-                return new ToolUseError(
-                    toolOutput.replace(/<\/?tool_use_error>/g, ""),
-                );
+    switch (message.type) {
+        case "text":
+            // No-op; don't echo messages from the user or other agents.
+            return [];
+
+        case "tool_result": {
+            const toolOutput = toolResultContentToString(message.content);
+            if (message.is_error) {
+                return [
+                    new ToolUseError(
+                        toolOutput.replace(/<\/?tool_use_error>/g, ""),
+                    ),
+                ];
+            } else {
+                return [
+                    new ToolUseSuccess({
+                        toolOutput,
+                        toolUseId: message.tool_use_id,
+                    }),
+                ];
             }
-            return new ToolUseSuccess({toolOutput, toolUseId});
-        },
-    );
+        }
+    }
 }
 
 function toolResultContentToString(
@@ -140,10 +160,4 @@ function toolResultContentToString(
         default:
             return content.map(prop("text")).join("\n\n");
     }
-}
-
-function prop<NameT extends keyof any>(
-    name: NameT,
-): <ObjT extends {[Key in NameT]: any}>(obj: ObjT) => ObjT[NameT] {
-    return (obj) => obj[name];
 }
