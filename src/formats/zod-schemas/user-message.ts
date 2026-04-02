@@ -1,8 +1,15 @@
 import * as z from "zod";
 
+const Text = z.looseObject({
+    type: z.literal("text"),
+    text: z.string(),
+});
+
+export const ToolResultContent = z.union([z.string(), z.array(Text)]);
+
 export const UserMessageContent = z.looseObject({
     type: z.literal("tool_result"),
-    content: z.string(),
+    content: ToolResultContent,
     is_error: z.optional(z.boolean()),
     tool_use_id: z.string(),
 });

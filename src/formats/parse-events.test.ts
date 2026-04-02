@@ -2,7 +2,7 @@ import {describe, expect, it} from "vitest";
 import {readdirSync} from "fs";
 import {join} from "path";
 import {parseEvents} from "./parse-events.ts";
-import {StreamJsonLine} from "./stream-json-line.ts";
+import {StreamJsonLine} from "./zod-schemas/stream-json-line.ts";
 
 const testcases = readdirSync(join(import.meta.dirname, "testcases"));
 

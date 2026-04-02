@@ -4,11 +4,11 @@ import {
     AssistantLine,
     StreamJsonLine,
     type UserLine,
-} from "./stream-json-line.ts";
+} from "./zod-schemas/stream-json-line.ts";
 import {Thinking} from "../core/events/thinking.ts";
 import {TextOutput} from "../core/events/text-output.ts";
-import {ToolUseMessageContent} from "./assistant-message.ts";
-import {ToolCall, UnrecognizedToolCall} from "./tool-calls.ts";
+import {ToolUseMessageContent} from "./zod-schemas/assistant-message.ts";
+import {ToolCall, UnrecognizedToolCall} from "./zod-schemas/tool-calls.ts";
 import {GenericToolCall} from "../core/events/generic-tool-call.ts";
 import {BashToolCall} from "../core/events/bash-tool-call.ts";
 import {ReadToolCall} from "../core/events/read-tool-call.ts";
@@ -19,6 +19,7 @@ import {UnrecognizedJsonEvent} from "../core/events/unrecognized-json-event.ts";
 import {ToolUseSuccess} from "../core/events/tool-use-success.ts";
 import {ToolUseError} from "../core/events/tool-use-error.ts";
 import {TaskToolCall} from "../core/events/task-tool-call.ts";
+import {ToolResultContent} from "./zod-schemas/user-message.ts";
 
 export function parseEvents(data: unknown): ClaudeIOEvent[] {
     const parsed = StreamJsonLine.safeParse(data);
@@ -119,12 +120,30 @@ function parseToolResultEvents(
 ): ClaudeIOEvent[] {
     return data.message.content.map(
         ({content, is_error: isError, tool_use_id: toolUseId}) => {
+            const toolOutput = toolResultContentToString(content);
             if (isError) {
                 return new ToolUseError(
-                    content.replace(/<\/?tool_use_error>/g, ""),
+                    toolOutput.replace(/<\/?tool_use_error>/g, ""),
                 );
             }
-            return new ToolUseSuccess({toolOutput: content, toolUseId});
+            return new ToolUseSuccess({toolOutput, toolUseId});
         },
     );
+}
+
+function toolResultContentToString(
+    content: z.infer<typeof ToolResultContent>,
+): string {
+    switch (typeof content) {
+        case "string":
+            return content;
+        default:
+            return content.map(prop("text")).join("\n\n");
+    }
+}
+
+function prop<NameT extends keyof any>(
+    name: NameT,
+): <ObjT extends {[Key in NameT]: any}>(obj: ObjT) => ObjT[NameT] {
+    return (obj) => obj[name];
 }
