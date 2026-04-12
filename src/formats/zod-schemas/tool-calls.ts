@@ -21,7 +21,7 @@ export const BashToolCall = z.looseObject({
     id: z.string(),
     input: z.looseObject({
         command: z.string(),
-        description: z.string(),
+        description: z.optional(z.string()),
         timeout: z.optional(z.number()),
     }),
 });
