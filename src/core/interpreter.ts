@@ -12,6 +12,7 @@ export class Interpreter {
 
     constructor(
         private readonly output: Output,
+        // TODO[1]: Pass a FormattingContext here, not the Colorizer.
         private readonly colorizer: Colorizer,
     ) {}
 
