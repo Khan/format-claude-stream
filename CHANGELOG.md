@@ -1,5 +1,18 @@
 # @khanacademy/format-claude-stream
 
+## 0.2.0
+
+### Minor Changes
+
+- caa8120: Breaking change: `new ClaudeStreamFormatter` now accepts a context object as the second argument. See the README for a usage example.
+  If you pass the `cwd` option in the context object, file paths will be relativized in the output.
+
+### Patch Changes
+
+- df81848: Agent tool calls are now formatted nicely.
+- c3fa49b: `Glob` tool calls are now formatted nicely.
+- 05a78f3: `Write` tool calls are now formatted nicely.
+
 ## 0.1.4
 
 ### Patch Changes
