@@ -1,4 +1,5 @@
 import {ClaudeIOEvent, FormattingContext} from "./claude-io-event.type.ts";
+import {relativizePath} from "../../lib/relativize-path.ts";
 
 export interface ConstructorParams {
     pattern: string;
@@ -17,13 +18,13 @@ export class GlobToolCall implements ClaudeIOEvent {
         this.toolUseId = toolUseId;
     }
 
-    format({colorizer}: FormattingContext): string {
-        return colorizer.action(this.message());
+    format({colorizer, cwd}: FormattingContext): string {
+        return colorizer.action(this.message(cwd));
     }
 
-    private message(): string {
+    private message(cwd: string | undefined): string {
         if (this.path) {
-            return `Glob: ${this.pattern} in ${this.path}`;
+            return `Glob: ${this.pattern} in ${relativizePath(cwd, this.path)}`;
         } else {
             return `Glob: ${this.pattern}`;
         }

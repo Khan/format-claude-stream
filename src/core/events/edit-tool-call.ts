@@ -1,4 +1,5 @@
 import {ClaudeIOEvent, FormattingContext} from "./claude-io-event.type.ts";
+import {relativizePath} from "../../lib/relativize-path.ts";
 
 export interface ConstructorParams {
     path: string;
@@ -14,7 +15,9 @@ export class EditToolCall implements ClaudeIOEvent {
         this.toolUseId = toolUseId;
     }
 
-    format({colorizer}: FormattingContext): string {
-        return colorizer.importantAction(`Edit: ${this.path}`);
+    format({colorizer, cwd}: FormattingContext): string {
+        return colorizer.importantAction(
+            `Edit: ${relativizePath(cwd, this.path)}`,
+        );
     }
 }

@@ -20,6 +20,7 @@ const inputLines = readline.createInterface({
 
 const claudeStreamFormatter = new ClaudeStreamFormatter(new StandardOutput(), {
     colorizer: new ChalkColorizer(),
+    cwd: process.cwd(),
 });
 
 for await (const line of inputLines) {
