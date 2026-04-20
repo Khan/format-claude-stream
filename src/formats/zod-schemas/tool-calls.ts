@@ -26,6 +26,15 @@ export const BashToolCall = z.looseObject({
     }),
 });
 
+export const GlobToolCall = z.looseObject({
+    name: z.literal("Glob"),
+    id: z.string(),
+    input: z.looseObject({
+        path: z.optional(z.string()),
+        pattern: z.string(),
+    }),
+});
+
 export const GrepToolCall = z.looseObject({
     name: z.literal("Grep"),
     id: z.string(),
@@ -62,6 +71,7 @@ export const UnrecognizedToolCall = z.looseObject({
 export const ToolCall = z.discriminatedUnion("name", [
     BashToolCall,
     EditToolCall,
+    GlobToolCall,
     GrepToolCall,
     ReadToolCall,
     TaskToolCall,

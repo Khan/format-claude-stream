@@ -25,6 +25,7 @@ import {
 } from "./zod-schemas/user-message.ts";
 import {prop} from "../lib/prop.ts";
 import {WriteToolCall} from "../core/events/write-tool-call.ts";
+import {GlobToolCall} from "../core/events/glob-tool-call.ts";
 
 export function parseEvents(data: unknown): ClaudeIOEvent[] {
     const parsed = StreamJsonLine.safeParse(data);
@@ -101,6 +102,12 @@ function parseToolCallEvent(
         case "Edit":
             return new EditToolCall({
                 path: toolCall.input.file_path,
+                toolUseId: toolCall.id,
+            });
+        case "Glob":
+            return new GlobToolCall({
+                pattern: toolCall.input.pattern,
+                path: toolCall.input.path,
                 toolUseId: toolCall.id,
             });
         case "Grep":
