@@ -1,9 +1,11 @@
-import {ClaudeIOEvent} from "./events/claude-io-event.type.ts";
+import {
+    ClaudeIOEvent,
+    FormattingContext,
+} from "./events/claude-io-event.type.ts";
 import {ToolUseSuccess} from "./events/tool-use-success.ts";
 import {ToolUseError} from "./events/tool-use-error.ts";
 import {ReadToolCall} from "./events/read-tool-call.ts";
 import {EditToolCall} from "./events/edit-tool-call.ts";
-import {Colorizer} from "./ports/colorizer.ts";
 import {Output} from "./ports/output.ts";
 
 export class Interpreter {
@@ -12,8 +14,7 @@ export class Interpreter {
 
     constructor(
         private readonly output: Output,
-        // TODO[1]: Pass a FormattingContext here, not the Colorizer.
-        private readonly colorizer: Colorizer,
+        private readonly ctx: FormattingContext,
     ) {}
 
     async process(event: ClaudeIOEvent): Promise<void> {
@@ -26,9 +27,7 @@ export class Interpreter {
         if (this.needsBlankLineBefore(event)) {
             await this.output.write("\n");
         }
-        await this.output.write(
-            event.format({colorizer: this.colorizer}) + "\n",
-        );
+        await this.output.write(event.format(this.ctx) + "\n");
         this.lastWrittenEvent = event;
     }
 

@@ -18,10 +18,9 @@ const inputLines = readline.createInterface({
     terminal: false,
 });
 
-const claudeStreamFormatter = new ClaudeStreamFormatter(
-    new StandardOutput(),
-    new ChalkColorizer(),
-);
+const claudeStreamFormatter = new ClaudeStreamFormatter(new StandardOutput(), {
+    colorizer: new ChalkColorizer(),
+});
 
 for await (const line of inputLines) {
     try {

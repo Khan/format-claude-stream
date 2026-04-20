@@ -55,7 +55,7 @@ import {ClaudeStreamFormatter, StandardOutput, ChalkColorizer} from "@khanacadem
 
 const claudeStreamFormatter = new ClaudeStreamFormatter(
     new StandardOutput(),
-    new ChalkColorizer(),
+    {colorizer: new ChalkColorizer()},
 );
 
 await claudeStreamFormatter.write(JSON.parse(streamLine));

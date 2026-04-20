@@ -3,18 +3,18 @@ import {OutputFake} from "./core/ports/output-fake.ts";
 import {ClaudeStreamFormatter} from "./claude-stream-formatter.ts";
 import {NullColorizer} from "./core/ports/null-colorizer.ts";
 
-const nullColorizer = new NullColorizer();
+const ctx = {colorizer: new NullColorizer()};
 
 describe("ClaudeStreamFormatter", () => {
     it("does not write to output when merely created", () => {
         const outputFake = new OutputFake();
-        new ClaudeStreamFormatter(outputFake, nullColorizer);
+        new ClaudeStreamFormatter(outputFake, ctx);
         expect(outputFake.value()).toBe("");
     });
 
     it("prints empty JSON payloads", async () => {
         const outputFake = new OutputFake();
-        const csf = new ClaudeStreamFormatter(outputFake, nullColorizer);
+        const csf = new ClaudeStreamFormatter(outputFake, ctx);
 
         await csf.write({});
 
@@ -23,7 +23,7 @@ describe("ClaudeStreamFormatter", () => {
 
     it("prints JSON payloads with unrecognized `type`", async () => {
         const outputFake = new OutputFake();
-        const csf = new ClaudeStreamFormatter(outputFake, nullColorizer);
+        const csf = new ClaudeStreamFormatter(outputFake, ctx);
 
         await csf.write({type: "bork-bork-bork"});
 

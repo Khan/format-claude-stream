@@ -18,7 +18,9 @@ import {TaskToolCall} from "./events/task-tool-call.ts";
 describe("Interpreter", () => {
     it("outputs a generic tool call event", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(new GenericToolCall("Hammer", {nail: 1}));
 
@@ -27,7 +29,9 @@ describe("Interpreter", () => {
 
     it("formats a Bash tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new BashToolCall("pnpm test 2>&1 | tail -100"),
@@ -38,7 +42,9 @@ describe("Interpreter", () => {
 
     it("colorizes a Bash tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new MarkupColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new MarkupColorizer(),
+        });
 
         await interpreter.process(
             new BashToolCall("pnpm test 2>&1 | tail -100"),
@@ -51,7 +57,9 @@ describe("Interpreter", () => {
 
     it("formats a Read tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new ReadToolCall({path: "/foo/bar", toolUseId: ""}),
@@ -64,7 +72,9 @@ describe("Interpreter", () => {
         // The result of Read tool calls is just the file contents. We don't
         // really need to see that printed to the terminal.
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new ReadToolCall({path: "/foo/bar", toolUseId: "id1"}),
@@ -84,7 +94,9 @@ describe("Interpreter", () => {
         // has been updated successfully." We don't really need to see that
         // printed to the terminal.
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new EditToolCall({path: "/foo/bar", toolUseId: "id1"}),
@@ -104,7 +116,9 @@ describe("Interpreter", () => {
         // has been updated successfully." We don't really need to see that
         // printed to the terminal.
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new EditToolCall({path: "/foo/bar", toolUseId: "id1"}),
@@ -124,7 +138,9 @@ describe("Interpreter", () => {
 
     it("colorizes a Read tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new MarkupColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new MarkupColorizer(),
+        });
 
         await interpreter.process(
             new ReadToolCall({path: "/foo/bar", toolUseId: ""}),
@@ -135,7 +151,9 @@ describe("Interpreter", () => {
 
     it("formats an Edit tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new EditToolCall({path: "/foo/bar", toolUseId: ""}),
@@ -146,7 +164,9 @@ describe("Interpreter", () => {
 
     it("colorizes an Edit tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new MarkupColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new MarkupColorizer(),
+        });
 
         await interpreter.process(
             new EditToolCall({path: "/foo/bar", toolUseId: ""}),
@@ -157,7 +177,9 @@ describe("Interpreter", () => {
 
     it("formats thinking", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(new Thinking("Mmm... donuts"));
 
@@ -166,7 +188,9 @@ describe("Interpreter", () => {
 
     it("colorizes thinking", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new MarkupColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new MarkupColorizer(),
+        });
 
         await interpreter.process(new Thinking("Mmm... donuts"));
 
@@ -177,7 +201,9 @@ describe("Interpreter", () => {
 
     it("formats a grep tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new GrepToolCall({
@@ -192,7 +218,9 @@ describe("Interpreter", () => {
 
     it("colorizes a grep tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new MarkupColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new MarkupColorizer(),
+        });
 
         await interpreter.process(
             new GrepToolCall({
@@ -209,7 +237,9 @@ describe("Interpreter", () => {
 
     it("escapes slashes in a grep pattern", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new GrepToolCall({
@@ -224,7 +254,9 @@ describe("Interpreter", () => {
 
     it("writes an unrecognized tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new GenericToolCall("UncannyValley", {foo: "bar"}),
@@ -235,7 +267,9 @@ describe("Interpreter", () => {
 
     it("writes a text message intended for the user", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(new TextOutput("Hello!"));
 
@@ -244,7 +278,9 @@ describe("Interpreter", () => {
 
     it("colorizes text messages", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new MarkupColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new MarkupColorizer(),
+        });
 
         await interpreter.process(new TextOutput("Hello!"));
 
@@ -253,7 +289,9 @@ describe("Interpreter", () => {
 
     it("formats a tool use error", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new MarkupColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new MarkupColorizer(),
+        });
 
         await interpreter.process(new ToolUseError("Kablooie"));
 
@@ -262,7 +300,9 @@ describe("Interpreter", () => {
 
     it("outputs a blank line between a tool call output and a Bash call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new ToolUseSuccess({toolOutput: "the output", toolUseId: ""}),
@@ -274,7 +314,9 @@ describe("Interpreter", () => {
 
     it("outputs a blank line between a tool call output and a Read call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new ToolUseSuccess({toolOutput: "the output", toolUseId: ""}),
@@ -288,7 +330,9 @@ describe("Interpreter", () => {
 
     it("does not output a blank line between file operations", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         const events: ClaudeIOEvent[] = [
             new ReadToolCall({path: "/foo.txt", toolUseId: "1"}),
@@ -312,7 +356,9 @@ describe("Interpreter", () => {
 
     it("does not output a blank line between a tool call and its error", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         const events: ClaudeIOEvent[] = [
             new BashToolCall("echo hello"),
@@ -330,7 +376,9 @@ describe("Interpreter", () => {
 
     it("formats a task tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new NullColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new NullColorizer(),
+        });
 
         await interpreter.process(
             new TaskToolCall({
@@ -348,7 +396,9 @@ describe("Interpreter", () => {
 
     it("colorizes a task tool call", async () => {
         const outputFake = new OutputFake();
-        const interpreter = new Interpreter(outputFake, new MarkupColorizer());
+        const interpreter = new Interpreter(outputFake, {
+            colorizer: new MarkupColorizer(),
+        });
 
         await interpreter.process(
             new TaskToolCall({
