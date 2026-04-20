@@ -6,6 +6,7 @@ import {ToolUseSuccess} from "./events/tool-use-success.ts";
 import {ToolUseError} from "./events/tool-use-error.ts";
 import {ReadToolCall} from "./events/read-tool-call.ts";
 import {EditToolCall} from "./events/edit-tool-call.ts";
+import {WriteToolCall} from "./events/write-tool-call.ts";
 import {Output} from "./ports/output.ts";
 
 export class Interpreter {
@@ -58,9 +59,12 @@ export class Interpreter {
     }
 }
 
-// TODO: isFileCrudOp should return true for WriteToolCall.
 function isFileCrudOp(event: ClaudeIOEvent) {
-    return event instanceof ReadToolCall || event instanceof EditToolCall;
+    return (
+        event instanceof ReadToolCall ||
+        event instanceof EditToolCall ||
+        event instanceof WriteToolCall
+    );
 }
 
 function isToolResult(event: ClaudeIOEvent) {

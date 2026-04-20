@@ -14,6 +14,7 @@ import {Interpreter} from "./interpreter.ts";
 import {ToolUseSuccess} from "./events/tool-use-success.ts";
 import {ClaudeIOEvent} from "./events/claude-io-event.type.js";
 import {TaskToolCall} from "./events/task-tool-call.ts";
+import {WriteToolCall} from "./events/write-tool-call.ts";
 
 describe("Interpreter", () => {
     it("outputs a generic tool call event", async () => {
@@ -343,6 +344,8 @@ describe("Interpreter", () => {
             new ToolUseSuccess({toolOutput: "", toolUseId: "3"}),
             new EditToolCall({path: "/bar.txt", toolUseId: "4"}),
             new ToolUseSuccess({toolOutput: "", toolUseId: "4"}),
+            new WriteToolCall({path: "/baz.txt", toolUseId: "5"}),
+            new ToolUseSuccess({toolOutput: "", toolUseId: "5"}),
         ];
 
         for (const event of events) {
@@ -350,7 +353,7 @@ describe("Interpreter", () => {
         }
 
         expect(outputFake.value()).toBe(
-            "Read: /foo.txt\nRead: /bar.txt\nEdit: /foo.txt\nEdit: /bar.txt\n",
+            "Read: /foo.txt\nRead: /bar.txt\nEdit: /foo.txt\nEdit: /bar.txt\nWrite: /baz.txt\n",
         );
     });
 
