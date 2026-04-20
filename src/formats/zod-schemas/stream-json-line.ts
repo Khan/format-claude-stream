@@ -11,13 +11,10 @@ export const AssistantLine = z.looseObject({
     message: AssistantMessage,
 });
 
-const ToolUseResult = z.union([
-    z.string(),
-    z.looseObject({
-        // TODO: narrow this type down once I understand it better
-        type: z.optional(z.string()),
-    }),
-]);
+// tool_use_result has heterogeneous shapes depending on the tool (Bash, Edit,
+// Read, Agent, etc.) with no consistent discriminator field. The field is
+// parsed but not used by the event formatter; it is purely informational.
+const ToolUseResult = z.union([z.string(), z.looseObject({})]);
 
 /**
  * Represents input to Claude, including tool call results and file contents.
