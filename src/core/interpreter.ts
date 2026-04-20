@@ -58,6 +58,7 @@ export class Interpreter {
     }
 }
 
+// TODO: isFileCrudOp should return true for WriteToolCall.
 function isFileCrudOp(event: ClaudeIOEvent) {
     return event instanceof ReadToolCall || event instanceof EditToolCall;
 }
