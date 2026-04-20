@@ -1,0 +1,6 @@
+{
+    "verify": "pnpm verify",
+    "fix": "pnpm fix",
+    "todoPatterns": ["\\bTODO:"],
+    "interruptPatterns": ["\\bFIXME:"]
+}
