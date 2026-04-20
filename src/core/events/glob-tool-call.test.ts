@@ -10,7 +10,9 @@ describe("GlobToolCall", () => {
             toolUseId: "not used",
         });
 
-        expect(event.format(new NullColorizer())).toBe("Glob: *.ts in /foo");
+        expect(event.format({colorizer: new NullColorizer()})).toBe(
+            "Glob: *.ts in /foo",
+        );
     });
 
     it("omits the path when not provided", () => {
@@ -19,7 +21,9 @@ describe("GlobToolCall", () => {
             toolUseId: "not used",
         });
 
-        expect(event.format(new NullColorizer())).toBe("Glob: *.ts");
+        expect(event.format({colorizer: new NullColorizer()})).toBe(
+            "Glob: *.ts",
+        );
     });
 
     it("omits the path when empty", () => {
@@ -29,6 +33,8 @@ describe("GlobToolCall", () => {
             toolUseId: "not used",
         });
 
-        expect(event.format(new NullColorizer())).toBe("Glob: *.ts");
+        expect(event.format({colorizer: new NullColorizer()})).toBe(
+            "Glob: *.ts",
+        );
     });
 });

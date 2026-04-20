@@ -1,5 +1,4 @@
-import {ClaudeIOEvent} from "./claude-io-event.type.ts";
-import {Colorizer} from "../ports/colorizer.ts";
+import {ClaudeIOEvent, FormattingContext} from "./claude-io-event.type.ts";
 
 export interface ConstructorParams {
     path: string;
@@ -15,7 +14,7 @@ export class WriteToolCall implements ClaudeIOEvent {
         this.toolUseId = toolUseId;
     }
 
-    format(colorizer: Colorizer): string {
+    format({colorizer}: FormattingContext): string {
         return colorizer.importantAction(`Write: ${this.path}`);
     }
 }

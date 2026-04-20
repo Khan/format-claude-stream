@@ -11,11 +11,13 @@ describe("GrepToolCall", () => {
             path: "/foo/bar",
             toolUseId: "t1",
         });
-        expect(event.format(nullColorizer)).toBe("Grep: /a/ in /foo/bar");
+        expect(event.format({colorizer: nullColorizer})).toBe(
+            "Grep: /a/ in /foo/bar",
+        );
     });
 
     it("defaults the path to '.'", () => {
         const event = new GrepToolCall({pattern: "a", toolUseId: "t1"});
-        expect(event.format(nullColorizer)).toBe("Grep: /a/ in .");
+        expect(event.format({colorizer: nullColorizer})).toBe("Grep: /a/ in .");
     });
 });

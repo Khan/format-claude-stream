@@ -26,7 +26,9 @@ export class Interpreter {
         if (this.needsBlankLineBefore(event)) {
             await this.output.write("\n");
         }
-        await this.output.write(event.format(this.colorizer) + "\n");
+        await this.output.write(
+            event.format({colorizer: this.colorizer}) + "\n",
+        );
         this.lastWrittenEvent = event;
     }
 

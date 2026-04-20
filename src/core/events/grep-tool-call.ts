@@ -1,5 +1,4 @@
-import {Colorizer} from "../ports/colorizer.ts";
-import {ClaudeIOEvent} from "./claude-io-event.type.ts";
+import {ClaudeIOEvent, FormattingContext} from "./claude-io-event.type.ts";
 
 export interface ConstructorParams {
     pattern: string;
@@ -18,7 +17,7 @@ export class GrepToolCall implements ClaudeIOEvent {
         this.toolUseId = toolUseId;
     }
 
-    format(colorizer: Colorizer): string {
+    format({colorizer}: FormattingContext): string {
         return colorizer.action(
             `Grep: /${escape(this.pattern)}/ in ${this.path ?? "."}`,
         );

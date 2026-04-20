@@ -1,5 +1,4 @@
-import {Colorizer} from "../ports/colorizer.ts";
-import {ClaudeIOEvent} from "./claude-io-event.type.ts";
+import {ClaudeIOEvent, FormattingContext} from "./claude-io-event.type.ts";
 
 interface ConstructorParams {
     toolUseId: string;
@@ -26,7 +25,7 @@ export class TaskToolCall implements ClaudeIOEvent {
         this.prompt = prompt;
     }
 
-    format(colorizer: Colorizer): string {
+    format({colorizer}: FormattingContext): string {
         let headline = `Task (${this.subagentType}): ${this.description}`;
         return [colorizer.importantAction(headline), this.prompt].join("\n");
     }

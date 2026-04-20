@@ -1,10 +1,9 @@
-import {Colorizer} from "../ports/colorizer.ts";
-import {ClaudeIOEvent} from "./claude-io-event.type.ts";
+import {ClaudeIOEvent, FormattingContext} from "./claude-io-event.type.ts";
 
 export class Thinking implements ClaudeIOEvent {
     constructor(private readonly thoughts: string) {}
 
-    format(colorizer: Colorizer) {
+    format({colorizer}: FormattingContext) {
         return colorizer.claudeThinking(`Thinking: ${this.thoughts}`);
     }
 }

@@ -1,5 +1,4 @@
-import {Colorizer} from "../ports/colorizer.ts";
-import {ClaudeIOEvent} from "./claude-io-event.type.ts";
+import {ClaudeIOEvent, FormattingContext} from "./claude-io-event.type.ts";
 
 export class GenericToolCall implements ClaudeIOEvent {
     constructor(
@@ -7,7 +6,7 @@ export class GenericToolCall implements ClaudeIOEvent {
         private readonly params: unknown,
     ) {}
 
-    format(colorizer: Colorizer) {
+    format({colorizer}: FormattingContext) {
         return colorizer.action(
             `${this.toolName}: ${JSON.stringify(this.params)}`,
         );
