@@ -1,5 +1,11 @@
 # @khanacademy/format-claude-stream
 
+## 0.1.4
+
+### Patch Changes
+
+- 8790092: The schema for Bash tool calls has been relaxed so the description is not required. This allows more Bash tool calls to be parsed and formatted nicely.
+
 ## 0.1.3
 
 ### Patch Changes
