@@ -111,10 +111,11 @@ function parseToolCallEvent(
                 toolUseId: toolCall.id,
             });
         case "Grep":
-            return new GrepToolCall(
-                toolCall.input.pattern,
-                toolCall.input.path,
-            );
+            return new GrepToolCall({
+                pattern: toolCall.input.pattern,
+                path: toolCall.input.path,
+                toolUseId: toolCall.id,
+            });
         case "Task":
             return new TaskToolCall({
                 toolUseId: toolCall.id,

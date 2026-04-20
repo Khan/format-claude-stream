@@ -6,12 +6,16 @@ const nullColorizer = new NullColorizer();
 
 describe("GrepToolCall", () => {
     it("includes the path being searched in the formatted text", () => {
-        const event = new GrepToolCall("a", "/foo/bar");
+        const event = new GrepToolCall({
+            pattern: "a",
+            path: "/foo/bar",
+            toolUseId: "t1",
+        });
         expect(event.format(nullColorizer)).toBe("Grep: /a/ in /foo/bar");
     });
 
     it("defaults the path to '.'", () => {
-        const event = new GrepToolCall("a");
+        const event = new GrepToolCall({pattern: "a", toolUseId: "t1"});
         expect(event.format(nullColorizer)).toBe("Grep: /a/ in .");
     });
 });

@@ -179,7 +179,13 @@ describe("Interpreter", () => {
         const outputFake = new OutputFake();
         const interpreter = new Interpreter(outputFake, new NullColorizer());
 
-        await interpreter.process(new GrepToolCall("a regex", "/my/project"));
+        await interpreter.process(
+            new GrepToolCall({
+                pattern: "a regex",
+                path: "/my/project",
+                toolUseId: "t1",
+            }),
+        );
 
         expect(outputFake.value()).toBe("Grep: /a regex/ in /my/project\n");
     });
@@ -188,7 +194,13 @@ describe("Interpreter", () => {
         const outputFake = new OutputFake();
         const interpreter = new Interpreter(outputFake, new MarkupColorizer());
 
-        await interpreter.process(new GrepToolCall("a regex", "/my/project"));
+        await interpreter.process(
+            new GrepToolCall({
+                pattern: "a regex",
+                path: "/my/project",
+                toolUseId: "t1",
+            }),
+        );
 
         expect(outputFake.value()).toBe(
             "[[action Grep: /a regex/ in /my/project]]\n",
@@ -199,7 +211,13 @@ describe("Interpreter", () => {
         const outputFake = new OutputFake();
         const interpreter = new Interpreter(outputFake, new NullColorizer());
 
-        await interpreter.process(new GrepToolCall("/", "/my/project"));
+        await interpreter.process(
+            new GrepToolCall({
+                pattern: "/",
+                path: "/my/project",
+                toolUseId: "t1",
+            }),
+        );
 
         expect(outputFake.value()).toBe("Grep: /\\// in /my/project\n");
     });
