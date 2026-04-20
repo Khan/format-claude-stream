@@ -24,6 +24,7 @@ import {
     UserMessageContent,
 } from "./zod-schemas/user-message.ts";
 import {prop} from "../lib/prop.ts";
+import {WriteToolCall} from "../core/events/write-tool-call.ts";
 
 export function parseEvents(data: unknown): ClaudeIOEvent[] {
     const parsed = StreamJsonLine.safeParse(data);
@@ -113,6 +114,11 @@ function parseToolCallEvent(
                 subagentType: toolCall.input.subagent_type,
                 description: toolCall.input.description,
                 prompt: toolCall.input.prompt,
+            });
+        case "Write":
+            return new WriteToolCall({
+                toolUseId: toolCall.id,
+                path: toolCall.input.file_path,
             });
         default:
             throw new UnreachableCodeError(toolCall);

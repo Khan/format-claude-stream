@@ -45,6 +45,14 @@ export const TaskToolCall = z.looseObject({
     }),
 });
 
+export const WriteToolCall = z.looseObject({
+    name: z.literal("Write"),
+    id: z.string(),
+    input: z.looseObject({
+        file_path: z.string(),
+    }),
+});
+
 export const UnrecognizedToolCall = z.looseObject({
     name: z.string(),
     id: z.string(),
@@ -57,4 +65,5 @@ export const ToolCall = z.discriminatedUnion("name", [
     GrepToolCall,
     ReadToolCall,
     TaskToolCall,
+    WriteToolCall,
 ]);
