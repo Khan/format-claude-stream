@@ -1,5 +1,14 @@
 import * as z from "zod";
 
+export const AgentToolCall = z.looseObject({
+    name: z.literal("Agent"),
+    id: z.string(),
+    input: z.looseObject({
+        description: z.string(),
+        prompt: z.string(),
+    }),
+});
+
 export const EditToolCall = z.looseObject({
     name: z.literal("Edit"),
     id: z.string(),
@@ -69,6 +78,7 @@ export const UnrecognizedToolCall = z.looseObject({
 });
 
 export const ToolCall = z.discriminatedUnion("name", [
+    AgentToolCall,
     BashToolCall,
     EditToolCall,
     GlobToolCall,

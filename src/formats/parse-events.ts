@@ -18,6 +18,7 @@ import {UnreachableCodeError} from "../lib/unreachable-code-error.ts";
 import {UnrecognizedJsonEvent} from "../core/events/unrecognized-json-event.ts";
 import {ToolUseSuccess} from "../core/events/tool-use-success.ts";
 import {ToolUseError} from "../core/events/tool-use-error.ts";
+import {AgentToolCall} from "../core/events/agent-tool-call.ts";
 import {TaskToolCall} from "../core/events/task-tool-call.ts";
 import {
     ToolResultContent,
@@ -115,6 +116,12 @@ function parseToolCallEvent(
                 pattern: toolCall.input.pattern,
                 path: toolCall.input.path,
                 toolUseId: toolCall.id,
+            });
+        case "Agent":
+            return new AgentToolCall({
+                toolUseId: toolCall.id,
+                description: toolCall.input.description,
+                prompt: toolCall.input.prompt,
             });
         case "Task":
             return new TaskToolCall({
