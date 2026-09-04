@@ -2,6 +2,7 @@ import z from "zod";
 import {ClaudeIOEvent} from "../core/events/claude-io-event.type.ts";
 import {
     AssistantLine,
+    isIgnoredLine,
     StreamJsonLine,
     type UserLine,
 } from "./zod-schemas/stream-json-line.ts";
@@ -35,27 +36,13 @@ export function parseEvents(data: unknown): ClaudeIOEvent[] {
         return [new UnrecognizedJsonEvent(data)];
     }
 
+    if (isIgnoredLine(parsed.data)) {
+        return [];
+    }
+
     switch (parsed.data.type) {
         case "assistant":
             return parseOutputEvents(parsed.data);
-        case "result":
-            // Result lines seem to just repeat text output earlier by
-            // the assistant, so we ignore them.
-            return [];
-        case "stream_event":
-            // These events provide incrementally streamed data, which is
-            // also rolled up into other event types. We don't care about
-            // streaming tokens to output as fast as they come in, so we
-            // ignore these events.
-            return [];
-        case "system":
-            // E.g. the "type":"system", "subtype":"init" event. We ignore
-            // these.
-            return [];
-        case "rate_limit_event":
-            // I'm not sure what these events are for, but they get emitted
-            // every time I run `claude`.
-            return [];
         case "user":
             return parseInputEvents(parsed.data);
         default:
