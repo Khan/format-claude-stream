@@ -48,7 +48,7 @@ const IGNORED_TYPES = [
     "rate_limit_event",
 
     // Result lines seem to just repeat text output earlier by the assistant,
-    // so there is nothing left to say by the time one arrives.
+    // so they are redundant.
     "result",
 
     // A heartbeat from a tool that is still running. It carries no detail
