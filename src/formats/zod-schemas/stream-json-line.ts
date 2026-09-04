@@ -25,28 +25,56 @@ export const UserLine = z.looseObject({
     tool_use_result: z.optional(ToolUseResult),
 });
 
-export const ResultLine = z.looseObject({
-    type: z.literal("result"),
-    result: z.string(),
-});
+/**
+ * Message types we recognize and have consciously decided not to render, with
+ * the reason for each.
+ *
+ * A type that is neither rendered nor listed here is reported as unrecognized,
+ * in red. That is deliberate: it is how we find out that Claude has grown a
+ * message type nobody has considered yet. Silence would hide it.
+ */
+const IGNORED_TYPES = [
+    // These events provide incrementally streamed data, which is also rolled
+    // up into other event types. We don't care about streaming tokens to
+    // output as fast as they come in, so we ignore these events.
+    "stream_event",
 
-const StreamEventLine = z.looseObject({
-    type: z.literal("stream_event"),
-});
+    // E.g. the "type":"system", "subtype":"init" event. Session bookkeeping
+    // rather than anything the agent did.
+    "system",
 
-const SystemLine = z.looseObject({
-    type: z.literal("system"),
-});
+    // I'm not sure what these events are for, but they get emitted every time
+    // I run `claude`.
+    "rate_limit_event",
 
-const RateLimitEventLine = z.looseObject({
-    type: z.literal("rate_limit_event"),
+    // Result lines seem to just repeat text output earlier by the assistant,
+    // so they are redundant.
+    "result",
+
+    // A heartbeat from a tool that is still running. It contains no information
+    // beyond how long the call has taken, and one arrives every few seconds
+    // during a slow command, so rendering them would be noise.
+    "tool_progress",
+] as const;
+
+const IgnoredLine = z.looseObject({
+    type: z.literal(IGNORED_TYPES),
 });
 
 export const StreamJsonLine = z.discriminatedUnion("type", [
     AssistantLine,
     UserLine,
-    RateLimitEventLine,
-    ResultLine,
-    StreamEventLine,
-    SystemLine,
+    IgnoredLine,
 ]);
+
+type IgnoredLine = z.infer<typeof IgnoredLine>;
+
+/**
+ * Whether this line is one we recognize and have deliberately decided not to
+ * render. `IGNORED_TYPES` is the list, and says why each type is on it.
+ */
+export function isIgnoredLine(
+    line: z.infer<typeof StreamJsonLine>,
+): line is IgnoredLine {
+    return (IGNORED_TYPES as readonly string[]).includes(line.type);
+}
