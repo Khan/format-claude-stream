@@ -50,6 +50,11 @@ const IGNORED_TYPES = [
     // Result lines seem to just repeat text output earlier by the assistant,
     // so there is nothing left to say by the time one arrives.
     "result",
+
+    // A heartbeat from a tool that is still running. It carries no detail
+    // beyond how long the call has taken, and one arrives every few seconds
+    // during a slow command, so rendering them would be noise.
+    "tool_progress",
 ] as const;
 
 const IgnoredLine = z.looseObject({
