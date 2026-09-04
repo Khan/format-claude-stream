@@ -51,7 +51,7 @@ const IGNORED_TYPES = [
     // so they are redundant.
     "result",
 
-    // A heartbeat from a tool that is still running. It carries no detail
+    // A heartbeat from a tool that is still running. It contains no information
     // beyond how long the call has taken, and one arrives every few seconds
     // during a slow command, so rendering them would be noise.
     "tool_progress",
